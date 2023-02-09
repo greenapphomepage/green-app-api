@@ -1,16 +1,19 @@
 import { Exclude } from 'class-transformer';
 import {
+  AfterLoad,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Permissions } from './permission';
 import { Roles } from './roles';
+import { RefreshToken } from './refresh-token';
 
 @Entity('users')
 export class Users {
@@ -23,11 +26,8 @@ export class Users {
   @Column({ type: 'varchar', length: 255 })
   public user_password: string;
 
-  @Column({
-    type: 'varchar',
-    nullable: true,
-  })
-  refreshHash?: string;
+  @OneToMany(() => RefreshToken, (rf) => rf.user)
+  refreshToken: RefreshToken[];
 
   @ManyToMany(() => Permissions, (permissions) => permissions.users)
   @JoinTable({
@@ -91,4 +91,9 @@ export class Users {
 
   @DeleteDateColumn({ name: 'deleted_at' })
   public deleted_at: Date;
+
+  @AfterLoad()
+  convert() {
+    this.user_id = Number(this.user_id);
+  }
 }

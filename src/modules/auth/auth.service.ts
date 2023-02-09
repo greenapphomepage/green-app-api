@@ -21,6 +21,7 @@ import { AddPermissionsRolesDTO } from './dto/add-permission-role.dto';
 import * as process from 'process';
 import { UtilsProvider } from '../../utils/provider';
 import { SendResponse } from '../../utils/send-response';
+import { RefreshToken } from '../../entities/refresh-token';
 
 @Injectable()
 export class AuthService {
@@ -33,6 +34,8 @@ export class AuthService {
     private readonly userRepo: Repository<Users>,
     @InjectRepository(Roles)
     private readonly roleRepo: Repository<Roles>,
+    @InjectRepository(RefreshToken)
+    private readonly refreshTokenRepo: Repository<RefreshToken>,
   ) {}
 
   validateHash(password: string, hash: string): boolean {
@@ -41,7 +44,13 @@ export class AuthService {
     }
     return bcrypt.compareSync(password, hash);
   }
-  async login(user: LoginPostDTO) {
+  async login(
+    user: LoginPostDTO,
+    refreshTokenPayload: Pick<
+      RefreshToken,
+      'userAgent' | 'ip' | 'os' | 'browser'
+    >,
+  ) {
     const getUser = await this.usersService.FindUserByUsername(user.user_email);
     if (!getUser) {
       throw 'USER_NOT_FOUND';
@@ -53,7 +62,11 @@ export class AuthService {
       throw 'WRONG_PASSWORD';
     }
     const tokens = await this.signTokenVerify(getUser);
-    await this.updateRtHash(getUser.user_id, tokens.refreshToken);
+    await this.updateRtHash(
+      getUser.user_id,
+      tokens.refreshToken,
+      refreshTokenPayload,
+    );
     return tokens;
   }
 
@@ -87,35 +100,99 @@ export class AuthService {
     };
   }
 
-  async updateRtHash(userId: number, refreshToken: string): Promise<void> {
+  async updateRtHash(
+    userId: number,
+    refreshToken: string,
+    refreshTokenPayload: Pick<
+      RefreshToken,
+      'userAgent' | 'ip' | 'os' | 'browser'
+    >,
+  ): Promise<void> {
     const hash = UtilsProvider.generateHash(refreshToken);
-    await this.userRepo.update({ user_id: userId }, { refreshHash: hash });
+    const check = await this.refreshTokenRepo.findOne({
+      where: {
+        ip: refreshTokenPayload.ip,
+        browser: refreshTokenPayload.browser,
+        userAgent: refreshTokenPayload.userAgent,
+        os: refreshTokenPayload.os,
+        user: { user_id: userId },
+      },
+    });
+    if (!check) {
+      await this.refreshTokenRepo.insert({
+        user: { user_id: userId },
+        browser: refreshTokenPayload.browser,
+        userAgent: refreshTokenPayload.userAgent,
+        ip: refreshTokenPayload.ip,
+        os: refreshTokenPayload.os,
+        refreshHash: hash,
+      });
+    } else {
+      check.refreshHash = hash;
+      await this.refreshTokenRepo.save(check);
+    }
   }
 
-  async logout(userId: number) {
+  async logout(
+    userId: number,
+    refreshTokenPayload: Pick<
+      RefreshToken,
+      'userAgent' | 'ip' | 'os' | 'browser'
+    >,
+  ) {
     try {
-      await this.userRepo.update({ user_id: userId }, { refreshHash: null });
+      await this.refreshTokenRepo.update(
+        {
+          os: refreshTokenPayload.os,
+          ip: refreshTokenPayload.ip,
+          browser: refreshTokenPayload.browser,
+        },
+        { refreshHash: null },
+      );
       return { msg: 'Done' };
     } catch (e) {
       console.log(e);
     }
   }
 
-  async refreshTokens(userId: number, rt: string) {
+  async refreshTokens(
+    userId: number,
+    rt: string,
+    refreshTokenPayload: Pick<
+      RefreshToken,
+      'userAgent' | 'ip' | 'os' | 'browser'
+    >,
+  ) {
     try {
       if (!userId || !rt) {
         throw 'UNAUTHORIZED';
       }
-      const user = await this.userRepo.findOne({ where: { user_id: userId } });
-      if (!user || !user.refreshHash) {
-        throw 'UNAUTHORIZED';
+      const user = await this.userRepo.findOne({
+        where: {
+          user_id: userId,
+          refreshToken: {
+            ip: refreshTokenPayload.ip,
+            os: refreshTokenPayload.os,
+            browser: refreshTokenPayload.browser,
+          },
+        },
+        relations: {
+          refreshToken: true,
+        },
+      });
+      if (!user || user.refreshToken.length === 0) {
+        throw 'FORBIDDEN';
       }
 
-      const rtMatches = this.validateHash(rt, user.refreshHash);
+      const rtMatches = this.validateHash(rt, user.refreshToken[0].refreshHash);
       if (!rtMatches) throw 'FORBIDDEN';
 
       const tokens = await this.signTokenVerify(user);
-      await this.updateRtHash(user.user_id, tokens.refreshToken);
+      await this.updateRtHash(
+        user.user_id,
+        tokens.refreshToken,
+        refreshTokenPayload,
+      );
 
       return tokens;
     } catch (e) {

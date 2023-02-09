@@ -42,16 +42,27 @@ export class UserService {
       relations: { roles: { permissions: true } },
     });
   }
-  static async StaticFindUserById(UserId: number) {
+  static async StaticFindUserById(
+    UserId: number,
+    ip: string,
+    os: string,
+    browser: string,
+    userAgent: string,
+  ) {
     try {
       const userRepository = appDataSource.getRepository(Users);
 
       return await userRepository
         .createQueryBuilder('users')
         .leftJoinAndSelect('users.permissions', 'permissions')
+        .leftJoinAndSelect('users.refreshToken', 'refreshToken')
         .leftJoinAndSelect('users.roles', 'roles')
         .leftJoinAndSelect('roles.permissions', 'role_permissions')
         .where('users.user_id = :id', { id: UserId })
+        .where('refreshToken.ip = :ip', { ip })
+        .where('refreshToken.os = :os', { os })
+        .where('refreshToken.browser = :browser', { browser })
+        .where('refreshToken.userAgent = :userAgent', { userAgent })
         .getOne();
     } catch (e) {
       console.log({ e });
@@ -67,10 +78,14 @@ export class UserService {
           permissions: true,
           twoFAThrottleTime: true,
           twoFASecret: true,
-          refreshHash: true,
+          refreshToken: true,
         },
         where: { user_id: id },
-        relations: { roles: true, permissions: true },
+        relations: {
+          roles: true,
+          permissions: true,
+          refreshToken: true,
+        },
       });
     } catch (e) {
       throw e;

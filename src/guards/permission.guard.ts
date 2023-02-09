@@ -10,6 +10,7 @@ import { Reflector } from '@nestjs/core';
 import { includes, isArray, isEmpty } from 'lodash';
 import { SendResponse } from 'src/utils/send-response';
 import { UserService } from '../modules/user/user.service';
+import { UAParser } from 'ua-parser-js';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -23,14 +24,28 @@ export class PermissionsGuard implements CanActivate {
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
 
     const request = context.switchToHttp().getRequest();
+    const userAgent = UAParser(request.headers['user-agent']);
 
-    const user = await UserService.StaticFindUserById(request.user.user_id);
+    const user = await UserService.StaticFindUserById(
+      request.user.user_id,
+      request.ip,
+      userAgent.os.name,
+      userAgent.browser.name,
+      userAgent.ua,
+    );
 
-    if (!user)
+    if (!user || user.refreshToken.length === 0)
       throw new HttpException(
         SendResponse.error('FORBIDDEN'),
         HttpStatus.FORBIDDEN,
       );
+
+    if (!user.refreshToken[0].refreshHash) {
+      throw new HttpException(
+        SendResponse.error('FORBIDDEN'),
+        HttpStatus.FORBIDDEN,
+      );
+    }
     const listPermission = user.permissions.map((o) => o.permission_key);
     const listRole = user.roles.map((o) => o.role_key);
 

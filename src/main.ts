@@ -87,8 +87,8 @@ async function bootstrap() {
   if (process.env.NODE_ENV !== 'production') {
     const config_bearer = new DocumentBuilder()
       .addBearerAuth()
-      .setTitle('Nest Example')
-      .setDescription('Nest Example By Nguyen Cong Thang')
+      .setTitle('Green App Api')
+      .setDescription('Green App Api Document')
       .setVersion('1.0.1')
       .build();
     const document = SwaggerModule.createDocument(app, config_bearer);

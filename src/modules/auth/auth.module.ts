@@ -12,6 +12,7 @@ import { Permissions } from 'src/entities/permission';
 import { RoleService } from '../role/role.service';
 import { PermissionService } from '../permission/permission.service';
 import { RefreshJwtStrategy } from './refresh-jwt.strategy';
+import { RefreshToken } from '../../entities/refresh-token';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { RefreshJwtStrategy } from './refresh-jwt.strategy';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Users, Roles, Permissions]),
+    TypeOrmModule.forFeature([Users, Roles, Permissions, RefreshToken]),
   ],
   providers: [
     AuthService,

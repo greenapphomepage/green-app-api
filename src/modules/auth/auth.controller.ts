@@ -5,9 +5,10 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Request,
+  Req,
   UseGuards,
 } from '@nestjs/common';
+import { Request } from 'express';
 import {
   ApiBearerAuth,
   ApiExtraModels,
@@ -30,6 +31,8 @@ import { LoginPostDTO } from './dto/login.dto';
 import { GetCurrentUserId } from '../../decorator/getUser';
 import { RefreshGuard } from '../../guards/refresh.guard';
 import { GetRefreshToken } from '../../decorator/get-refresh-token.decorator';
+import { UAParser } from 'ua-parser-js';
+import { RefreshToken } from '../../entities/refresh-token';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -63,9 +66,23 @@ export class AuthController {
   @ApiErrorResponse(code.WRONG_PASSWORD)
   @ApiErrorResponse(code.USER_NOT_FOUND)
   @ApiErrorResponse(code.USER_UNACTIVED)
-  async login(@Body() body: LoginPostDTO) {
+  async login(
+    @Body() body: LoginPostDTO,
+    @Req()
+    req: Request,
+  ) {
     try {
-      const token = await this.authService.login(body);
+      const userAgent = UAParser(req.headers['user-agent']);
+      const refreshTokenPayload: Pick<
+        RefreshToken,
+        'userAgent' | 'ip' | 'os' | 'browser'
+      > = {
+        ip: req.ip,
+        userAgent: userAgent.ua,
+        browser: userAgent.browser.name,
+        os: userAgent.os.name,
+      };
+      const token = await this.authService.login(body, refreshTokenPayload);
       return SendResponse.success({ token });
     } catch (e) {
       console.log(e);
@@ -76,9 +93,19 @@ export class AuthController {
   @Auth()
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  async logout(@GetCurrentUserId() userId: number) {
+  async logout(@GetCurrentUserId() userId: number, @Req() req: Request) {
     try {
-      const res = await this.authService.logout(userId);
+      const userAgent = UAParser(req.headers['user-agent']);
+      const refreshTokenPayload: Pick<
+        RefreshToken,
+        'userAgent' | 'ip' | 'os' | 'browser'
+      > = {
+        ip: req.ip,
+        userAgent: userAgent.ua,
+        browser: userAgent.browser.name,
+        os: userAgent.os.name,
+      };
+      const res = await this.authService.logout(userId, refreshTokenPayload);
       return SendResponse.success(res);
     } catch (e) {
       console.log(e);
@@ -92,9 +119,25 @@ export class AuthController {
   async refreshTokens(
     @GetCurrentUserId() userId: number,
     @GetRefreshToken('refreshToken') refreshToken: string,
+    @Req()
+    req: Request,
   ) {
     try {
-      const tokens = await this.authService.refreshTokens(userId, refreshToken);
+      const userAgent = UAParser(req.headers['user-agent']);
+      const refreshTokenPayload: Pick<
+        RefreshToken,
+        'userAgent' | 'ip' | 'os' | 'browser'
+      > = {
+        ip: req.ip,
+        userAgent: userAgent.ua,
+        browser: userAgent.browser.name,
+        os: userAgent.os.name,
+      };
+      const tokens = await this.authService.refreshTokens(
+        userId,
+        refreshToken,
+        refreshTokenPayload,
+      );
       return SendResponse.success({ tokens });
     } catch (e) {
       console.log(e);
