@@ -34,29 +34,29 @@ import { GetRefreshToken } from '../../decorator/get-refresh-token.decorator';
 import { UAParser } from 'ua-parser-js';
 import { RefreshToken } from '../../entities/refresh-token';
 
-@ApiTags('Auth')
+@ApiTags('Auth Admin')
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersService: UserService,
   ) {}
-  @Post('register')
-  @ApiOperation({ summary: 'Register' })
-  @HttpCode(200)
-  @ApiErrorResponse(code.USER_EXISTED)
-  @ApiErrorResponse(code.BACKEND)
-  async Register(@Body() req: RegisterUserDTO) {
-    try {
-      const newUser = await this.usersService.registerUser(req);
-      if (newUser) {
-        return SendResponse.success({ msg: 'Done' });
-      }
-      return SendResponse.error('BACKEND');
-    } catch (e) {
-      return SendResponse.error(e);
-    }
-  }
+  // @Post('register')
+  // @ApiOperation({ summary: 'Register' })
+  // @HttpCode(200)
+  // @ApiErrorResponse(code.USER_EXISTED)
+  // @ApiErrorResponse(code.BACKEND)
+  // async Register(@Body() req: RegisterUserDTO) {
+  //   try {
+  //     const newUser = await this.usersService.registerUser(req);
+  //     if (newUser) {
+  //       return SendResponse.success({ msg: 'Done' });
+  //     }
+  //     return SendResponse.error('BACKEND');
+  //   } catch (e) {
+  //     return SendResponse.error(e);
+  //   }
+  // }
 
   @Post('login')
   @ApiOperation({

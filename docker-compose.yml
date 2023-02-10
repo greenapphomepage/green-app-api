@@ -1,7 +1,7 @@
 version: 3.11.0
 services:
   main:
-    container_name: main
+    container_name: green-app
     build:
       context: .
       dockerfile: Dockerfile
@@ -28,7 +28,7 @@ services:
       MYSQL_ROOT_PASSWORD: '${DB_PW}'
       MYSQL_ALLOW_EMPTY_PASSWORD: '${DB_ALLOW_EMPTY_PASSWORD}'
     ports:
-      - '${DB_PORT}:${DB_PORT}'
+      - '${DB_PORT}:3306'
     expose:
       - '${DB_PORT}'
     volumes:
