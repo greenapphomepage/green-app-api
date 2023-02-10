@@ -18,13 +18,13 @@ export class RegisterUserDTO {
   //   public user_nickname: string;
 
   @Expose()
-  @ApiProperty({ example: 'email' })
+  @ApiProperty({ example: 'admin@greenapp.com' })
   @IsEmail()
   public user_email: string;
 
   @Expose()
   @IsNotEmpty()
-  @ApiProperty({ example: 'MD5 hash' })
+  @ApiProperty({ example: '41933e60e9c19b866b3d68864727afe7' })
   public user_password: string;
 
   public create_at: Date;

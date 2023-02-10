@@ -59,7 +59,9 @@ export class AuthController {
   }
 
   @Post('login')
-  @ApiOperation({ summary: 'Login' })
+  @ApiOperation({
+    summary: 'Login with user_email and user_password has been md5 hash',
+  })
   @HttpCode(200)
   @ApiErrorResponse(code.BACKEND)
   @ApiErrorResponse(code.LOGIN_ERROR)
@@ -90,6 +92,7 @@ export class AuthController {
     }
   }
   @Post('logout')
+  @ApiOperation({ summary: 'Logout' })
   @Auth()
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
@@ -113,6 +116,9 @@ export class AuthController {
   }
 
   @UseGuards(RefreshGuard)
+  @ApiOperation({
+    summary: 'Refresh Token by input refreshToken to authentication headers',
+  })
   @ApiBearerAuth()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
