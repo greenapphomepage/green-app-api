@@ -27,7 +27,7 @@ import {
 export class SystemController {
   constructor(private readonly systemsService: SystemService) {}
 
-  @Post('upload-mage')
+  @Post('upload-image')
   @HttpCode(200)
   // @Auth()
   // @ApiBearerAuth()

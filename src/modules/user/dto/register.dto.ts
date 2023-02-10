@@ -24,7 +24,7 @@ export class RegisterUserDTO {
 
   @Expose()
   @IsNotEmpty()
-  @ApiProperty({ example: '41933e60e9c19b866b3d68864727afe7' })
+  @ApiProperty({ example: 'e10adc3949ba59abbe56e057f20f883e' })
   public user_password: string;
 
   public create_at: Date;

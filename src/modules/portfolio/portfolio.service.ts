@@ -33,25 +33,27 @@ export class PortfolioService {
       });
       await this.portfolioRepo.save(newPortfolios);
       if (newPortfolios) {
-        console.log(newPortfolios.portfolio_id);
+        const getPortfolio = await this.portfolioRepo.findOne({
+          where: { portfolio_id: newPortfolios.portfolio_id },
+        });
         if (logo) {
           const newLogo = FileManagerService.ModuleFileSave(
-            newPortfolios.portfolio_id,
+            getPortfolio.portfolio_id,
             logo,
             'logo',
           );
-          newPortfolios.logo = newLogo;
+          getPortfolio.logo = newLogo;
         }
         if (images && images.length) {
           const newImage = FileManagerService.ModuleListFileSave(
-            newPortfolios.portfolio_id,
+            getPortfolio.portfolio_id,
             images,
             'images',
           );
-          newPortfolios.images = JSON.stringify(newImage);
+          getPortfolio.images = JSON.stringify(newImage);
         }
-        await this.portfolioRepo.save(newPortfolios);
-        return newPortfolios;
+        await this.portfolioRepo.save(getPortfolio);
+        return getPortfolio;
       }
       return null;
     } catch (e) {
