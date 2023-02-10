@@ -1,0 +1,45 @@
+version: 3.11.0
+services:
+  main:
+    container_name: main
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - '.:/usr/src/app'
+      - /usr/src/app/node_modules
+    ports:
+      - '${LISTEN_PORT}:${LISTEN_PORT}'
+    networks:
+      - msql_go_net
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: '${DB_NAME}'
+      MYSQL_USER: '${DB_USER}'
+      MYSQL_PASSWORD: '${DB_PW}'
+      MYSQL_ROOT_PASSWORD: '${DB_PW}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: '${DB_ALLOW_EMPTY_PASSWORD}'
+    ports:
+      - '${DB_PORT}:${DB_PORT}'
+    expose:
+      - '${DB_PORT}'
+    volumes:
+      - 'mysql:/data/mysql'
+    networks:
+      - msql_go_net
+    env_file:
+      - .env
+volumes:
+  mysql:
+    driver: local
+networks:
+  msql_go_net:
+    driver: bridge
