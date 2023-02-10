@@ -18,7 +18,7 @@ declare const module: any;
 
 async function bootstrap() {
   const logger = new Logger();
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   app.use((req, res, next) => {
     const err = null;
     try {

@@ -1,44 +1,37 @@
-version: 3.11.0
+version: 3.8.0
+
 services:
   db:
     image: mysql
-    container_name: db
-    restart: always
+    env_file:
+      - .env
     environment:
       MYSQL_DATABASE: '${DB_NAME}'
       MYSQL_USER: '${DB_USER}'
       MYSQL_PASSWORD: '${DB_PW}'
       MYSQL_ROOT_PASSWORD: '${DB_PW}'
       MYSQL_ALLOW_EMPTY_PASSWORD: '${DB_ALLOW_EMPTY_PASSWORD}'
-    ports:
-      - '${DB_PORT}:3306'
     volumes:
-      - 'mysql:/data/mysql'
+      - mysql_data:/var/lib/mysql
     networks:
       - backend
+
+  nestjs:
+    build: .
     env_file:
       - .env
-  green-app:
-    container_name: green-app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    env_file:
-      - .env
+    ports:
+      - '${LISTEN_PORT}:${LISTEN_PORT}'
     volumes:
       - '.:/usr/src/app'
       - /usr/src/app/node_modules
-    ports:
-      - '${LISTEN_PORT}:${LISTEN_PORT}'
-    networks:
-      - backend
     depends_on:
       - db
-    links:
-      - db:db
+    networks:
+      - backend
+
 volumes:
-  mysql:
-    driver: local
+  mysql_data:
+
 networks:
   backend:
