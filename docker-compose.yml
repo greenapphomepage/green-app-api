@@ -1,22 +1,23 @@
 version: '3.11.0'
 services:
-  db:
+  db-green:
     image: mysql:8.0.32
-    restart: always
+    container_name: db-green
+    restart: unless-stopped
     environment:
       MYSQL_DATABASE: '${DB_NAME}'
       MYSQL_USER: '${DB_USER}'
       MYSQL_PASSWORD: '${DB_PW}'
       MYSQL_ROOT_PASSWORD: '${DB_PW}'
       MYSQL_ALLOW_EMPTY_PASSWORD: '${DB_ALLOW_EMPTY_PASSWORD}'
+    networks:
+      - backend_networks
     ports:
       - '${DB_PORT}:3306'
     expose:
       - '${DB_PORT}'
     volumes:
       - 'mysql_data:/data/mysql'
-    networks:
-      - backend_networks
     env_file:
       - .env
   green-app:
@@ -35,12 +36,12 @@ services:
     networks:
       - backend_networks
     depends_on:
-      - db
-networks:
-  backend_networks:
-    driver: bridge
-    name: green-app-backend
+      - db-green
 volumes:
   mysql_data:
     driver: local
-
+networks:
+  backend_networks:
+    driver: bridge
+    name: backend-green-app-networks
+    external : false
