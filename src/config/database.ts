@@ -20,7 +20,7 @@ const DatabaseConfig = {
   },
   subscribers: [mySubscriber],
   // autoLoadEntities: true,
-  synchronize: process.env.SYNC === 'true' ? true : false,
+  synchronize: process.env.SYNC === 'true',
   // migrationsRun: false,
   entities: [join(__dirname, '..', 'entities', '**', '*.{ts,js}')],
   migrationsTableName: 'migrations',

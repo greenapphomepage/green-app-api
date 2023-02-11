@@ -10,6 +10,7 @@ services:
       MYSQL_PASSWORD: '${DB_PW}'
       MYSQL_ROOT_PASSWORD: '${DB_PW}'
       MYSQL_ALLOW_EMPTY_PASSWORD: '${DB_ALLOW_EMPTY_PASSWORD}'
+      MYSQL_ROOT_HOST: '%'
     networks:
       - backend_networks
     ports:
