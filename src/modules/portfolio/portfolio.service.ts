@@ -17,16 +17,8 @@ export class PortfolioService {
 
   async createPortfolios(body: CreatePortfoliosDto) {
     try {
-      const {
-        logo,
-        portfolio_name,
-        programming_language,
-        description,
-        title,
-        images,
-      } = body;
+      const { logo, programming_language, description, title, images } = body;
       const newPortfolios = await this.portfolioRepo.create({
-        portfolio_name,
         programming_language,
         title,
         description,
@@ -63,24 +55,14 @@ export class PortfolioService {
   }
   async updatePortfolios(body: UpdatePortfoliosDto) {
     try {
-      const {
-        id,
-        logo,
-        portfolio_name,
-        programming_language,
-        description,
-        title,
-        images,
-      } = body;
+      const { id, logo, programming_language, description, title, images } =
+        body;
       const checkPortfolios = await this.portfolioRepo.findOne({
         where: { portfolio_id: id },
       });
       if (!checkPortfolios) {
         throw code.PORTFOLIO_NOT_FOUND.type;
       }
-      checkPortfolios.portfolio_name = portfolio_name
-        ? portfolio_name
-        : checkPortfolios.portfolio_name;
 
       checkPortfolios.title = title ? title : checkPortfolios.title;
 
@@ -127,7 +109,7 @@ export class PortfolioService {
                 title: Like(`%${keyword}%`),
               },
               {
-                portfolio_name: Like(`%${keyword}%`),
+                programming_language: Like(`%${keyword}%`),
               },
             ]
           : {},

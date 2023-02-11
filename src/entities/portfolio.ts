@@ -13,8 +13,8 @@ export class Portfolios {
   @PrimaryGeneratedColumn('increment', { type: 'bigint', unsigned: true })
   public portfolio_id: number;
 
-  @Column({ type: 'varchar', length: 30 })
-  public portfolio_name: string;
+  // @Column({ type: 'varchar', length: 30, nullable: true })
+  // public portfolio_name: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   public logo: string;

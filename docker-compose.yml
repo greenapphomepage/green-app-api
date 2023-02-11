@@ -1,8 +1,7 @@
-version: 3.11.0
+version: '3.11.0'
 services:
   db:
-    image: mysql
-    container_name: db
+    image: mysql:8.0.32
     restart: always
     environment:
       MYSQL_DATABASE: '${DB_NAME}'
@@ -12,10 +11,12 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: '${DB_ALLOW_EMPTY_PASSWORD}'
     ports:
       - '${DB_PORT}:3306'
+    expose:
+      - '${DB_PORT}'
     volumes:
-      - 'mysql:/data/mysql'
+      - 'mysql_data:/data/mysql'
     networks:
-      - backend
+      - backend_networks
     env_file:
       - .env
   green-app:
@@ -32,13 +33,14 @@ services:
     ports:
       - '${LISTEN_PORT}:${LISTEN_PORT}'
     networks:
-      - backend
+      - backend_networks
     depends_on:
       - db
-    links:
-      - db:db
-volumes:
-  mysql:
-    driver: local
 networks:
-  backend:
+  backend_networks:
+    driver: bridge
+    name: green-app-backend
+volumes:
+  mysql_data:
+    driver: local
+

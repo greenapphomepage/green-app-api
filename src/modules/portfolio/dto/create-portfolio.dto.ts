@@ -12,19 +12,19 @@ import config from 'src/config/config';
 
 @Exclude()
 export class CreatePortfoliosDto {
-  @ApiProperty({
-    type: 'string',
-    example: 'portfolio_name,required',
-    required: true,
-    nullable: false,
-  })
-  @Expose()
-  @IsNotEmpty()
-  @IsString()
-  @MaxLength(30)
-  @Matches(config.REGEX_LETTER.value)
-  @Matches(config.NOT_ONLY_SPACES.value)
-  public portfolio_name: string;
+  // @ApiProperty({
+  //   type: 'string',
+  //   example: 'portfolio_name,required',
+  //   required: true,
+  //   nullable: false,
+  // })
+  // @Expose()
+  // @IsNotEmpty()
+  // @IsString()
+  // @MaxLength(30)
+  // @Matches(config.REGEX_LETTER.value)
+  // @Matches(config.NOT_ONLY_SPACES.value)
+  // public portfolio_name: string;
 
   @ApiProperty({
     type: 'string',
