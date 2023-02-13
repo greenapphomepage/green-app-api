@@ -16,11 +16,26 @@ import { CustomIntPipe } from '../../pipe/param_validation.pipe';
 import { QueryListDto } from '../../global/dto/query-list.dto';
 import { CreatePortfoliosDto } from './dto/create-portfolio.dto';
 import { UpdatePortfoliosDto } from './dto/update-portfolio.dto';
+import { DeletePortfolioDto } from './dto/delete-portfolio.dto';
 
 @ApiTags('Portfolios')
 @Controller('portfolio')
 export class PortfolioController {
   constructor(private readonly portfolioService: PortfolioService) {}
+
+  @ApiOperation({ summary: 'Get Images' })
+  @ApiBearerAuth()
+  @Auth({ roles: ['SUPER_ADMIN'] })
+  @Get('images/:id')
+  async getImages(@Param('id', CustomIntPipe) id: number) {
+    try {
+      const images = await this.portfolioService.getListImages(id);
+      return SendResponse.success(images);
+    } catch (e) {
+      console.log(e);
+      return SendResponse.error(e);
+    }
+  }
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Portfolios' })
   @Auth({ roles: ['SUPER_ADMIN'] })
@@ -96,6 +111,23 @@ export class PortfolioController {
     try {
       const portfolios = await this.portfolioService.deletePortfolios(id);
       return SendResponse.success(portfolios);
+    } catch (e) {
+      return SendResponse.error(e);
+    }
+  }
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete all or selected' })
+  @Auth({ roles: ['SUPER_ADMIN'] })
+  @Delete()
+  async deleteAll(@Body() body: DeletePortfolioDto) {
+    try {
+      let order;
+      if (body.ids && body.ids.length) {
+        order = await this.portfolioService.deleteSelected(body.ids);
+      } else {
+        order = await this.portfolioService.deleteAll();
+      }
+      return SendResponse.success(order);
     } catch (e) {
       return SendResponse.error(e);
     }

@@ -43,16 +43,22 @@ export class OrderProjectService {
         email,
       });
       await this.orderRepo.save(newOrder);
-      if (planFile) {
-        const newPlan = FileManagerService.ModuleFileSave(
-          newOrder.orderId,
-          planFile,
-          'plan',
-        );
-        newOrder.planFile = newPlan;
-        await this.orderRepo.save(newOrder);
+      if (newOrder) {
+        const getOrder = await this.orderRepo.findOne({
+          where: { orderId: newOrder.orderId },
+        });
+        if (planFile) {
+          const newPlan = FileManagerService.ModuleFileSave(
+            getOrder.orderId,
+            planFile,
+            'plan',
+          );
+          getOrder.planFile = newPlan;
+          await this.orderRepo.save(getOrder);
+        }
+        return getOrder;
       }
-      return newOrder;
+      return null;
     } catch (e) {
       console.log({ e });
       throw e;
@@ -123,17 +129,47 @@ export class OrderProjectService {
   }
   async deleteOrder(id: number) {
     try {
-      const portfolio = await this.orderRepo.findOne({
+      const order = await this.orderRepo.findOne({
         where: { orderId: id },
       });
-      if (!portfolio) {
+      if (!order) {
         throw code.ORDER_NOT_FOUND.type;
       }
-      await this.orderRepo.remove(portfolio);
+      await this.orderRepo.remove(order);
       return 'Done';
     } catch (e) {
       console.log({ e });
       throw e;
+    }
+  }
+
+  async deleteAll() {
+    try {
+      await this.orderRepo.clear();
+      return { msg: 'Done' };
+    } catch (e) {
+      throw e;
+      console.log(e);
+    }
+  }
+
+  async deleteSelected(ids: number[]) {
+    try {
+      const listSelected: OrderProject[] = [];
+      for (const id of ids) {
+        const order = await this.orderRepo.findOne({
+          where: { orderId: id },
+        });
+        if (!order) {
+          throw code.ORDER_NOT_FOUND.type;
+        }
+        listSelected.push(order);
+      }
+      await this.orderRepo.remove(listSelected);
+      return { msg: 'Done' };
+    } catch (e) {
+      throw e;
+      console.log(e);
     }
   }
 }

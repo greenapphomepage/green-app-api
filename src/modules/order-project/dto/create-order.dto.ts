@@ -3,6 +3,7 @@ import { Exclude, Expose } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
+  IsEmail,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -107,8 +108,18 @@ export class CreateOrderDto {
   })
   @Expose()
   @IsNotEmpty()
-  @IsString()
+  @IsEmail()
   public email: string;
+
+  @ApiProperty({
+    type: 'string',
+    example: 'presenter',
+    required: true,
+  })
+  @Expose()
+  @IsOptional()
+  @IsString()
+  public presenter: string;
 
   @ApiProperty({
     type: 'string',
@@ -122,7 +133,7 @@ export class CreateOrderDto {
 
   @ApiProperty({
     type: 'string',
-    example: 'description',
+    example: 'WEB_APP | MOBILE_APP | BOTH | NOTHING',
     required: true,
   })
   @Expose()

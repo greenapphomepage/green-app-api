@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import * as path from 'path';
 import { join } from 'path';
 import * as fs from 'fs';
 import config from 'src/config/config';
-import * as path from 'path';
 import { UtilsProvider } from './provider';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { request } from 'express';
 
 @Injectable()
 export class FileManagerService {
@@ -159,6 +158,35 @@ export class FileManagerService {
     } catch (e) {
       console.log(e);
       return null;
+    }
+  }
+  static RemovePictureAll(folder: string) {
+    try {
+      const manage_folder = `public/${folder}`;
+      const list_files = fs.readdirSync(manage_folder);
+      for (const file of list_files) {
+        fs.unlinkSync(file);
+      }
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+  }
+
+  static getImagesFromFolder(folder: string, id: number) {
+    try {
+      const list = [];
+      const manage_folder = `public/${folder}`;
+      const files = fs.readdirSync(manage_folder);
+      for (const file of files) {
+        const id_file = file.split('_');
+        if (id == parseInt(id_file[0])) {
+          list.push(`public/${file}`);
+        }
+      }
+      return list;
+    } catch (e) {
+      console.log(e);
     }
   }
 }

@@ -16,15 +16,16 @@ import { CustomIntPipe } from '../../pipe/param_validation.pipe';
 import { QueryListDto } from '../../global/dto/query-list.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { DeleteOrderDto } from './dto/delete-order.dto';
 
 @ApiTags('OrderProject')
 @Controller('order-project')
 export class OrderProjectController {
   constructor(private readonly orderProjectService: OrderProjectService) {}
 
-  @ApiBearerAuth()
+  // @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Order' })
-  @Auth({ roles: ['SUPER_ADMIN'] })
+  // @Auth({ roles: ['SUPER_ADMIN'] })
   @Post()
   async createOrder(@Body() body: CreateOrderDto) {
     try {
@@ -96,6 +97,23 @@ export class OrderProjectController {
   async deleteOrder(@Param('id', CustomIntPipe) id: number) {
     try {
       const order = await this.orderProjectService.deleteOrder(id);
+      return SendResponse.success(order);
+    } catch (e) {
+      return SendResponse.error(e);
+    }
+  }
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete all or selected' })
+  @Auth({ roles: ['SUPER_ADMIN'] })
+  @Delete()
+  async deleteAll(@Body() body: DeleteOrderDto) {
+    try {
+      let order;
+      if (body.ids && body.ids.length) {
+        order = await this.orderProjectService.deleteSelected(body.ids);
+      } else {
+        order = await this.orderProjectService.deleteAll();
+      }
       return SendResponse.success(order);
     } catch (e) {
       return SendResponse.error(e);

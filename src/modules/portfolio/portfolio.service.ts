@@ -45,6 +45,7 @@ export class PortfolioService {
           getPortfolio.images = JSON.stringify(newImage);
         }
         await this.portfolioRepo.save(getPortfolio);
+        getPortfolio.images = JSON.stringify(getPortfolio.images);
         return getPortfolio;
       }
       return null;
@@ -82,14 +83,28 @@ export class PortfolioService {
           )
         : checkPortfolios.logo;
       if (images && images.length) {
-        const newImage = FileManagerService.ModuleListFileSave(
-          checkPortfolios.portfolio_id,
-          images,
-          'images',
-        );
-        checkPortfolios.images = JSON.stringify(newImage);
+        const listImage: string[] = [];
+        for (const image of images) {
+          if (image.includes('images')) {
+            listImage.push(image);
+          } else {
+            const tmpImage = FileManagerService.ModuleFileSave(
+              checkPortfolios.portfolio_id,
+              image,
+              'images',
+            );
+            listImage.push(tmpImage);
+          }
+        }
+        // const newImage = FileManagerService.ModuleListFileSave(
+        //   checkPortfolios.portfolio_id,
+        //   images,
+        //   'images',
+        // );
+        checkPortfolios.images = JSON.stringify(listImage);
       }
       await this.portfolioRepo.save(checkPortfolios);
+      checkPortfolios.images = JSON.parse(checkPortfolios.images);
       return checkPortfolios;
     } catch (e) {
       console.log({ e });
@@ -138,6 +153,14 @@ export class PortfolioService {
       throw e;
     }
   }
+
+  async getListImages(id: number) {
+    try {
+      return FileManagerService.getImagesFromFolder('images', id);
+    } catch (e) {
+      console.log(e);
+    }
+  }
   async deletePortfolios(id: number) {
     try {
       const portfolio = await this.portfolioRepo.findOne({
@@ -168,6 +191,54 @@ export class PortfolioService {
     } catch (e) {
       console.log({ e });
       throw e;
+    }
+  }
+
+  async deleteAll() {
+    try {
+      await this.portfolioRepo.clear();
+      FileManagerService.RemovePictureAll('images');
+      FileManagerService.RemovePictureAll('logo');
+      return { msg: 'Done' };
+    } catch (e) {
+      throw e;
+      console.log(e);
+    }
+  }
+
+  async deleteSelected(ids: number[]) {
+    try {
+      const listSelected = [];
+      for (const id of ids) {
+        const portfolio = await this.portfolioRepo.findOne({
+          where: { portfolio_id: id },
+        });
+        if (!portfolio) {
+          throw code.PORTFOLIO_NOT_FOUND.type;
+        }
+        if (portfolio.logo) {
+          FileManagerService.RemovePicture(
+            portfolio.portfolio_id,
+            portfolio.logo,
+            'logo',
+          );
+        }
+        if (portfolio.images) {
+          JSON.parse(portfolio.images).forEach((image) => {
+            FileManagerService.RemovePicture(
+              portfolio.portfolio_id,
+              image,
+              'images',
+            );
+          });
+        }
+        listSelected.push(portfolio);
+      }
+      await this.portfolioRepo.remove(listSelected);
+      return { msg: 'Done' };
+    } catch (e) {
+      throw e;
+      console.log(e);
     }
   }
 }
