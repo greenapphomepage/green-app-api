@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'green-app',
       script: 'npm',
-      args: 'run start:prod',
+      args: 'run start',
       output: '/dev/null',
       error: '/dev/null',
       instances: 1,
