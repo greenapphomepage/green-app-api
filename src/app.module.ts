@@ -18,6 +18,7 @@ import { OrderProjectModule } from './modules/order-project/order-project.module
 import { FileManagerService } from './utils/file-manager';
 import { ScheduleModule } from '@nestjs/schedule';
 import { FeatureModule } from './modules/feature/feature.module';
+import { PreviewModule } from './modules/preview/preview.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { FeatureModule } from './modules/feature/feature.module';
     PortfolioModule,
     OrderProjectModule,
     FeatureModule,
+    PreviewModule,
   ],
   controllers: [AppController],
   providers: [AppService, FileManagerService],

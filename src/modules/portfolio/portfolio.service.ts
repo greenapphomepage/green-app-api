@@ -75,13 +75,14 @@ export class PortfolioService {
         ? programming_language
         : checkPortfolios.programming_language;
 
-      checkPortfolios.logo = logo
-        ? FileManagerService.ModuleFileSave(
-            checkPortfolios.portfolio_id,
-            logo,
-            'logo',
-          )
-        : checkPortfolios.logo;
+      checkPortfolios.logo =
+        logo && !logo.includes('logo')
+          ? FileManagerService.ModuleFileSave(
+              checkPortfolios.portfolio_id,
+              logo,
+              'logo',
+            )
+          : checkPortfolios.logo;
       if (images && images.length) {
         const listImage: string[] = [];
         for (const image of images) {

@@ -16,6 +16,7 @@ import { CustomIntPipe } from '../../pipe/param_validation.pipe';
 import { QueryListDto } from '../../global/dto/query-list.dto';
 import { CreateFeatureDto } from './dto/create-feature.dto';
 import { UpdateFeatureDto } from './dto/update-feature.dto';
+import { DeleteOrderDto } from '../order-project/dto/delete-order.dto';
 
 @ApiTags('Feature')
 @Controller('feature')
@@ -97,6 +98,24 @@ export class FeatureController {
     try {
       const feature = await this.featureService.deleteFeature(id);
       return SendResponse.success(feature);
+    } catch (e) {
+      return SendResponse.error(e);
+    }
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete all or selected' })
+  @Auth({ roles: ['SUPER_ADMIN'] })
+  @Delete()
+  async deleteAll(@Body() body: DeleteOrderDto) {
+    try {
+      let order;
+      if (body.ids && body.ids.length) {
+        order = await this.featureService.deleteSelected(body.ids);
+      } else {
+        order = await this.featureService.deleteAll();
+      }
+      return SendResponse.success(order);
     } catch (e) {
       return SendResponse.error(e);
     }

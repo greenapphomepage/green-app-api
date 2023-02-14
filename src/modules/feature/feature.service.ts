@@ -108,4 +108,34 @@ export class FeatureService {
       throw e;
     }
   }
+
+  async deleteAll() {
+    try {
+      await this.featureRepo.clear();
+      return { msg: 'Done' };
+    } catch (e) {
+      throw e;
+      console.log(e);
+    }
+  }
+
+  async deleteSelected(ids: number[]) {
+    try {
+      const listSelected: Features[] = [];
+      for (const id of ids) {
+        const feature = await this.featureRepo.findOne({
+          where: { featureId: id },
+        });
+        if (!feature) {
+          throw code.FEATURE_NOT_FOUND.type;
+        }
+        listSelected.push(feature);
+      }
+      await this.featureRepo.remove(listSelected);
+      return { msg: 'Done' };
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
 }

@@ -136,6 +136,11 @@ export class OrderProjectService {
       if (!order) {
         throw code.ORDER_NOT_FOUND.type;
       }
+      if (order.planFile) {
+        JSON.parse(order.planFile).forEach((file) => {
+          FileManagerService.RemovePicture(order.orderId, file, 'plan');
+        });
+      }
       await this.orderRepo.remove(order);
       return 'Done';
     } catch (e) {
@@ -147,6 +152,7 @@ export class OrderProjectService {
   async deleteAll() {
     try {
       await this.orderRepo.clear();
+      FileManagerService.RemovePictureAll('plan');
       return { msg: 'Done' };
     } catch (e) {
       throw e;
@@ -163,6 +169,11 @@ export class OrderProjectService {
         });
         if (!order) {
           throw code.ORDER_NOT_FOUND.type;
+        }
+        if (order.planFile) {
+          JSON.parse(order.planFile).forEach((file) => {
+            FileManagerService.RemovePicture(order.orderId, file, 'plan');
+          });
         }
         listSelected.push(order);
       }
