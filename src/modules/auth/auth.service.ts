@@ -113,7 +113,7 @@ export class AuthService {
       where: {
         ip: refreshTokenPayload.ip,
         browser: refreshTokenPayload.browser,
-        userAgent: refreshTokenPayload.userAgent,
+        userAgent: refreshTokenPayload.userAgent.slice(0, 7),
         os: refreshTokenPayload.os,
         user: { user_id: userId },
       },
@@ -122,7 +122,7 @@ export class AuthService {
       await this.refreshTokenRepo.insert({
         user: { user_id: userId },
         browser: refreshTokenPayload.browser,
-        userAgent: refreshTokenPayload.userAgent,
+        userAgent: refreshTokenPayload.userAgent.slice(0, 7),
         ip: refreshTokenPayload.ip,
         os: refreshTokenPayload.os,
         refreshHash: hash,
@@ -145,6 +145,7 @@ export class AuthService {
         {
           os: refreshTokenPayload.os,
           ip: refreshTokenPayload.ip,
+          userAgent: refreshTokenPayload.userAgent.slice(0, 7),
           browser: refreshTokenPayload.browser,
         },
         { refreshHash: null },

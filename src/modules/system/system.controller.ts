@@ -18,6 +18,7 @@ import { multerFileOptions, multerOptions } from '../../utils/multer_options';
 import { Auth } from 'src/decorator/auth.decorator';
 import {
   FileUploadDto,
+  MultiFile2UploadDto,
   MultiFileUploadDto,
   UploadDto,
 } from './upload-file.dto';
@@ -124,6 +125,43 @@ export class SystemController {
         !file ? undefined : file,
       );
       return SendResponse.success(_save);
+    } catch (e) {
+      console.log(e);
+      return SendResponse.error(e);
+    }
+  }
+
+  @Post('multiple-file')
+  @HttpCode(200)
+  // @Auth()
+  // @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'files',
+    type: MultiFile2UploadDto,
+  })
+  @UseInterceptors(FilesInterceptor('files', 6, multerFileOptions))
+  async uploadMultipleFile(@UploadedFiles() files: Array<Express.Multer.File>) {
+    try {
+      const listFile = [];
+      if (files) {
+        for (const file of files) {
+          if (file.size > +config.MAX_FILE_SIZE.value) {
+            throw 'FILE_ERROR';
+          }
+
+          if (!file) {
+            throw 'FILE_ERROR';
+          }
+
+          const _save = await this.systemsService.SavePicture(
+            'tmp',
+            !file ? undefined : file,
+          );
+          listFile.push(_save);
+        }
+      }
+      return SendResponse.success(listFile);
     } catch (e) {
       console.log(e);
       return SendResponse.error(e);

@@ -114,7 +114,7 @@ export class FileManagerService {
     for (const item of request_file) {
       const check = join(`public/tmp/`, path.basename(item));
       if (!fs.existsSync(check)) {
-        throw 'PICTURE_ERROR';
+        throw 'FILE_ERROR';
       }
       const new_file_name = `public/${folder}/${id}_${+new Date()}_${UtilsProvider.randomNumber(
         10,

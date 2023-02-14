@@ -31,7 +31,7 @@ export class PermissionsGuard implements CanActivate {
       request.ip,
       userAgent.os.name,
       userAgent.browser.name,
-      userAgent.ua,
+      userAgent.ua.slice(0, 7),
     );
 
     if (!user || user.refreshToken.length === 0)

@@ -45,7 +45,7 @@ export class PortfolioService {
           getPortfolio.images = JSON.stringify(newImage);
         }
         await this.portfolioRepo.save(getPortfolio);
-        getPortfolio.images = JSON.stringify(getPortfolio.images);
+        getPortfolio.images = JSON.parse(getPortfolio.images);
         return getPortfolio;
       }
       return null;

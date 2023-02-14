@@ -12,6 +12,7 @@ import {
   IsString,
   Matches,
   MaxLength,
+  ValidateNested,
 } from 'class-validator';
 import config from 'src/config/config';
 import { PlatformEnum } from '../../../enum/platform.enum';
@@ -32,14 +33,15 @@ export class CreateOrderDto {
   public projectName: string;
 
   @ApiProperty({
-    type: 'string',
-    example: 'planFile',
+    type: 'array',
+    items: { type: 'string' },
     required: false,
   })
   @Expose()
   @IsOptional()
-  @IsString()
-  public planFile: string;
+  @IsArray()
+  @ValidateNested({ each: true })
+  public planFile: [string];
 
   @ApiProperty({
     type: 'number',

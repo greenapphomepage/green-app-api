@@ -47,15 +47,16 @@ export class OrderProjectService {
         const getOrder = await this.orderRepo.findOne({
           where: { orderId: newOrder.orderId },
         });
-        if (planFile) {
-          const newPlan = FileManagerService.ModuleFileSave(
+        if (planFile && planFile.length) {
+          const newFiles = FileManagerService.ModuleListFileSave(
             getOrder.orderId,
             planFile,
             'plan',
           );
-          getOrder.planFile = newPlan;
-          await this.orderRepo.save(getOrder);
+          getOrder.planFile = JSON.stringify(newFiles);
         }
+        await this.orderRepo.save(getOrder);
+        getOrder.planFile = JSON.parse(getOrder.planFile);
         return getOrder;
       }
       return null;

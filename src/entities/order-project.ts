@@ -17,7 +17,7 @@ export class OrderProject {
   @Column({ type: 'varchar', length: 30, nullable: true })
   public projectName: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'text', nullable: true })
   public planFile: string;
 
   @Column({ type: 'text', nullable: true })

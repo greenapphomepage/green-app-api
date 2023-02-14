@@ -35,6 +35,6 @@ const config = {
   ALLOW_EXTENSION: { value: ['.png', '.img', '.webp', '.jpg', '.jpeg'] },
   DURATION_TYPE: { value: ['se', 'mi', 'ho', 'da', 'mo'] },
   WHITE_LIST: { value: ['113.161.36.95'] },
-  MAX_FILE_SIZE: { value: 2000000 },
+  MAX_FILE_SIZE: { value: 20971520 },
 };
 export default config;
