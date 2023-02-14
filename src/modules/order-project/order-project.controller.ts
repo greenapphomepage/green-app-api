@@ -54,9 +54,9 @@ export class OrderProjectController {
   }
 
   @Get('')
-  @ApiBearerAuth()
+  // @ApiBearerAuth()
   @ApiOperation({ summary: 'List Order' })
-  @Auth({ roles: ['SUPER_ADMIN'] })
+  // @Auth({ roles: ['SUPER_ADMIN'] })
   async listOrder(@Query() query: QueryListDto) {
     try {
       query.perPage = !query.perPage ? 10 : query.perPage;
@@ -78,9 +78,9 @@ export class OrderProjectController {
     }
   }
 
-  @ApiBearerAuth()
+  // @ApiBearerAuth()
   @ApiOperation({ summary: 'Detail Order' })
-  @Auth({ roles: ['SUPER_ADMIN'] })
+  // @Auth({ roles: ['SUPER_ADMIN'] })
   @Get(':id')
   async detailOrder(@Param('id', CustomIntPipe) id: number) {
     try {

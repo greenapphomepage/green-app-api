@@ -67,9 +67,9 @@ export class PortfolioController {
   }
 
   @Get('')
-  @ApiBearerAuth()
+  // @ApiBearerAuth()
   @ApiOperation({ summary: 'List Portfolios' })
-  @Auth({ roles: ['SUPER_ADMIN'] })
+  // @Auth({ roles: ['SUPER_ADMIN'] })
   async listPortfolios(@Query() query: QueryListDto) {
     try {
       query.perPage = !query.perPage ? 10 : query.perPage;
@@ -91,9 +91,9 @@ export class PortfolioController {
     }
   }
 
-  @ApiBearerAuth()
+  // @ApiBearerAuth()
   @ApiOperation({ summary: 'Detail Portfolios' })
-  @Auth({ roles: ['SUPER_ADMIN'] })
+  // @Auth({ roles: ['SUPER_ADMIN'] })
   @Get(':id')
   async detailPortfolios(@Param('id', CustomIntPipe) id: number) {
     try {

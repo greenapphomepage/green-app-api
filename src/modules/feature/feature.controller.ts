@@ -54,9 +54,9 @@ export class FeatureController {
   }
 
   @Get('')
-  @ApiBearerAuth()
+  // @ApiBearerAuth()
   @ApiOperation({ summary: 'List Feature' })
-  @Auth({ roles: ['SUPER_ADMIN'] })
+  // @Auth({ roles: ['SUPER_ADMIN'] })
   async listFeature(@Query() query: QueryListDto) {
     try {
       query.perPage = !query.perPage ? 10 : query.perPage;
@@ -78,9 +78,9 @@ export class FeatureController {
     }
   }
 
-  @ApiBearerAuth()
+  // @ApiBearerAuth()
   @ApiOperation({ summary: 'Detail Feature' })
-  @Auth({ roles: ['SUPER_ADMIN'] })
+  // @Auth({ roles: ['SUPER_ADMIN'] })
   @Get(':id')
   async detailFeature(@Param('id', CustomIntPipe) id: number) {
     try {
