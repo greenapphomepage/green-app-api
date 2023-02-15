@@ -28,6 +28,7 @@ export class OrderProjectService {
         platform,
         planFile,
         position,
+        presenter,
         email,
       } = body;
       const newOrder = await this.orderRepo.create({
@@ -41,6 +42,7 @@ export class OrderProjectService {
         platform,
         position,
         email,
+        presenter,
       });
       await this.orderRepo.save(newOrder);
       if (newOrder) {
