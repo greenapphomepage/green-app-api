@@ -21,7 +21,7 @@ export const multerOptions: MulterOptions = {
 
 export const multerFileOptions: MulterOptions = {
   fileFilter: (req: any, file: any, cb: any) => {
-    if (file.mimetype.match(/\/(pdf|xlsx|docs)$/)) {
+    if (file.mimetype.match(/\/(pdf|xlsx|docs|csv)$/)) {
       // Allow storage of file
       cb(null, true);
     } else {

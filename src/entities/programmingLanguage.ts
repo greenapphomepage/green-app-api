@@ -6,31 +6,18 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   AfterLoad,
-  ManyToOne,
-  JoinColumn,
 } from 'typeorm';
-import { Previews } from './preview';
 
-@Entity('features')
-export class Features {
+@Entity('programmingLanguage')
+export class programmingLanguage {
   @PrimaryGeneratedColumn('increment', { type: 'bigint', unsigned: true })
-  public featureId: number;
+  public id: number;
 
   @Column({ type: 'varchar', length: 50, unique: true })
-  public featureKey: string;
+  public key: string;
 
   @Column({ type: 'varchar', length: 50 })
-  public featureName: string;
-
-  @Column({ type: 'text' })
-  public extra: string;
-
-  @ManyToOne(() => Previews, (previews) => previews.features)
-  @JoinColumn({
-    name: 'previewId',
-    referencedColumnName: 'previewId',
-  })
-  preview: Previews;
+  public name: string;
 
   @CreateDateColumn({ name: 'created_at' })
   public created_at: Date;
@@ -43,7 +30,6 @@ export class Features {
 
   @AfterLoad()
   convert() {
-    this.featureId = Number(this.featureId);
-    this.extra = JSON.parse(this.extra);
+    this.id = Number(this.id);
   }
 }
