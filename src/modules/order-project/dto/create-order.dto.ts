@@ -40,7 +40,6 @@ export class CreateOrderDto {
   @Expose()
   @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
   public planFile: [string];
 
   @ApiProperty({

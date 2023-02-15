@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { programmingLanguage } from '../../entities/programmingLanguage';
 
 @Injectable()
-export class LanguageSeedSeed implements Seeder {
+export class LanguageSeed implements Seeder {
   constructor(
     @InjectRepository(programmingLanguage)
     private readonly repository: Repository<programmingLanguage>,
@@ -66,6 +66,7 @@ export class LanguageSeedSeed implements Seeder {
         name: 'Go',
       },
     ];
+    await this.repository.insert(data);
   }
 
   @Command({
