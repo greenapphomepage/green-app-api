@@ -28,6 +28,9 @@ export class Features {
   @Column({ type: 'text' })
   public extra: string;
 
+  @Column({ name: 'previewId', type: 'bigint', nullable: true })
+  previewId: number;
+
   @ManyToOne(() => Previews, (previews) => previews.features, { cascade: true })
   @JoinColumn({
     name: 'previewId',

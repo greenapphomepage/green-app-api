@@ -50,31 +50,60 @@ export class PreviewService {
       });
 
       if (body.programmingLanguage && body.programmingLanguage.length) {
-        preview.programmingLanguage = JSON.stringify(body.programmingLanguage);
+        await this.previewRepository.update(
+          { key: 'preview' },
+          { programmingLanguage: JSON.stringify(body.programmingLanguage) },
+        );
+        // preview.programmingLanguage = JSON.stringify(body.programmingLanguage);
       }
       if (body.responsive && body.responsive.length) {
-        preview.responsive = JSON.stringify(body.responsive);
+        await this.previewRepository.update(
+          { key: 'preview' },
+          { responsive: JSON.stringify(body.responsive) },
+        );
+        // preview.responsive = JSON.stringify(body.responsive);
       }
       if (body.platform && body.platform.length) {
-        preview.platform = JSON.stringify(body.platform);
+        await this.previewRepository.update(
+          { key: 'preview' },
+          { platform: JSON.stringify(body.platform) },
+        );
+        // preview.platform = JSON.stringify(body.platform);
       }
 
       if (body.features && body.features.length) {
-        const listFeature = [];
-        // const listOldFeaturesID = preview.features.map(item=> item.featureId)
+        const listOldFeaturesID = preview.features.map(
+          (item) => item.featureId,
+        );
         for (const feature of body.features) {
           const check = await this.featureRepository.findOne({
             where: { featureId: feature },
-            relations: { preview: true },
           });
           if (!check) {
             throw code.FEATURE_NOT_FOUND.type;
           }
-          listFeature.push(check);
+          if (listOldFeaturesID.includes(feature)) {
+            continue;
+          }
+          await this.featureRepository.update(
+            { featureId: check.featureId },
+            { previewId: preview.previewId },
+          );
         }
-        preview.features = listFeature;
+        for (const id of listOldFeaturesID) {
+          if (body.features.includes(id)) {
+            continue;
+          }
+          await this.featureRepository.update(
+            { featureId: id },
+            { previewId: null },
+          );
+        }
       }
-      return await this.previewRepository.save(preview);
+      return await this.previewRepository.findOne({
+        where: { key: 'preview' },
+        relations: { features: true },
+      });
     } catch (e) {
       console.log(e);
       throw e;
