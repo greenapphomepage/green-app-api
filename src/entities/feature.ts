@@ -22,10 +22,13 @@ export class Features {
   @Column({ type: 'varchar', length: 50 })
   public featureName: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  public image: string;
+
   @Column({ type: 'text' })
   public extra: string;
 
-  @ManyToOne(() => Previews, (previews) => previews.features)
+  @ManyToOne(() => Previews, (previews) => previews.features, { cascade: true })
   @JoinColumn({
     name: 'previewId',
     referencedColumnName: 'previewId',
@@ -44,6 +47,5 @@ export class Features {
   @AfterLoad()
   convert() {
     this.featureId = Number(this.featureId);
-    this.extra = JSON.parse(this.extra);
   }
 }

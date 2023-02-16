@@ -33,5 +33,11 @@ export class UpdateFeatureDto {
   @Expose()
   @IsOptional()
   @IsString()
+  image;
+
+  @ApiProperty({ type: 'string', example: 'extra' })
+  @Expose()
+  @IsOptional()
+  @IsString()
   extra;
 }

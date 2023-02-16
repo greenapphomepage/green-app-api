@@ -16,10 +16,11 @@ export class FeatureService {
 
   async createFeature(body: CreateFeatureDto) {
     try {
-      const { featureKey, featureName, extra } = body;
+      const { featureKey, featureName, extra, image } = body;
       const newFeature = await this.featureRepo.create({
         featureKey,
         featureName,
+        image,
         extra: JSON.stringify(extra),
       });
       await this.featureRepo.save(newFeature);
@@ -32,7 +33,7 @@ export class FeatureService {
   }
   async updateFeature(body: UpdateFeatureDto) {
     try {
-      const { id, featureName, featureKey, extra } = body;
+      const { id, featureName, featureKey, extra, image } = body;
       const checkFeature = await this.featureRepo.findOne({
         where: { featureId: id },
       });
@@ -42,6 +43,8 @@ export class FeatureService {
       checkFeature.featureName = featureName
         ? featureName
         : checkFeature.featureName;
+
+      checkFeature.image = image ? image : checkFeature.image;
 
       checkFeature.featureKey = featureKey
         ? featureKey
@@ -73,6 +76,9 @@ export class FeatureService {
             ]
           : {},
       });
+      list.map((item) => {
+        item.extra = JSON.parse(item.extra);
+      });
       return { list, count };
     } catch (e) {
       console.log({ e });
@@ -87,6 +93,7 @@ export class FeatureService {
       if (!feature) {
         throw code.FEATURE_NOT_FOUND.type;
       }
+      feature.extra = JSON.parse(feature.extra);
       return feature;
     } catch (e) {
       console.log({ e });

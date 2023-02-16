@@ -12,7 +12,7 @@ export class LanguageSeed implements Seeder {
     private readonly repository: Repository<programmingLanguage>,
   ) {}
   @Command({
-    command: 'seed:language',
+    command: 'create:language',
     describe: 'create language',
   })
   async up() {
@@ -64,6 +64,10 @@ export class LanguageSeed implements Seeder {
       {
         key: 'Go',
         name: 'Go',
+      },
+      {
+        key: 'Ruby',
+        name: 'Ruby',
       },
     ];
     await this.repository.insert(data);

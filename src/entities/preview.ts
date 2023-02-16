@@ -42,5 +42,10 @@ export class Previews {
   @AfterLoad()
   convert() {
     this.previewId = Number(this.previewId);
+    // this.programmingLanguage = JSON.parse(this.programmingLanguage);
+    // this.responsive = JSON.parse(this.responsive);
+    // this.platform = JSON.parse(this.platform);
+    // delete this.key;
+    // delete this.previewId;
   }
 }

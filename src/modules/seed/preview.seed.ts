@@ -18,7 +18,7 @@ export class PreviewSeed implements Seeder {
     private readonly featureRepo: Repository<Features>,
   ) {}
   @Command({
-    command: 'seed:preview',
+    command: 'create:preview',
     describe: 'create preview',
   })
   async up() {
