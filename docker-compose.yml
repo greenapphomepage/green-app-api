@@ -12,6 +12,10 @@ services:
       MYSQL_ROOT_PASSWORD: '${DB_PW}'
       MYSQL_ALLOW_EMPTY_PASSWORD: '${DB_ALLOW_EMPTY_PASSWORD}'
       MYSQL_ROOT_HOST: '%'
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
     networks:
       - backend_networks
       - admin_networks
