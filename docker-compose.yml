@@ -14,6 +14,7 @@ services:
       MYSQL_ROOT_HOST: '%'
     networks:
       - backend_networks
+      - admin_networks
     ports:
       - '${DB_PORT}:3306'
     expose:
@@ -22,6 +23,13 @@ services:
       - 'mysql_data:/data/mysql'
     env_file:
       - .env
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - admin_networks
   green-app:
     container_name: green-app
     build:
@@ -45,5 +53,5 @@ volumes:
 networks:
   backend_networks:
     driver: bridge
-    name: backend-green-app-networks
-    external : false
+  admin_networks:
+    driver: bridge
