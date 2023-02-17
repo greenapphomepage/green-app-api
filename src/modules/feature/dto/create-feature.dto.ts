@@ -35,15 +35,15 @@ export class CreateFeatureDto {
   @Matches(config.NOT_ONLY_SPACES.value)
   public featureKey: string;
 
-  @ApiProperty({ type: 'string', example: 'extra' })
+  @ApiProperty({ type: 'string', example: 'image' })
   @Expose()
   @IsOptional()
   @IsString()
-  image;
+  image: string;
 
-  @ApiProperty({ type: 'string', example: 'extra' })
+  @ApiProperty({ type: 'array', items: { type: 'string' } })
   @Expose()
   @IsOptional()
-  @IsString()
-  extra;
+  @IsArray()
+  extra: [string];
 }

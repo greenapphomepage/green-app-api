@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import { IsOptional, IsString, Matches, MaxLength } from 'class-validator';
+import {
+  IsArray,
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength,
+} from 'class-validator';
 import config from 'src/config/config';
 
 @Exclude()
@@ -35,9 +41,9 @@ export class UpdateFeatureDto {
   @IsString()
   image;
 
-  @ApiProperty({ type: 'string', example: 'extra' })
+  @ApiProperty({ type: 'array', items: { type: 'string' } })
   @Expose()
   @IsOptional()
-  @IsString()
-  extra;
+  @IsArray()
+  extra: [string];
 }

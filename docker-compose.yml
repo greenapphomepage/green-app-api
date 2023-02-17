@@ -2,6 +2,7 @@ version: '3.11.0'
 services:
   db-green:
     image: mysql:8.0.32
+    command: --default-authentication-plugin=mysql_native_password
     container_name: db-green
     restart: unless-stopped
     environment:
