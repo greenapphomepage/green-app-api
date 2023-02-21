@@ -6,7 +6,7 @@ import { TypeScreenEnum } from '../../screen/enum/type-screen.enum';
 
 export class FilterListTagDto extends QueryListDto {
   @Expose()
-  @ApiProperty({ type: 'string', enum: TypeScreenEnum })
+  @ApiProperty({ type: 'string', enum: TypeScreenEnum, required: false })
   @IsEnum(TypeScreenEnum)
   @IsOptional()
   public type: TypeScreenEnum;
