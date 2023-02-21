@@ -22,23 +22,6 @@ async function bootstrap() {
   app.use((req, res, next) => {
     const err = null;
     try {
-      const ipAddr =
-        req.headers['x-forwarded-for'] ||
-        req.connection.remoteAddress ||
-        req.socket.remoteAddress ||
-        req.connection.socket.remoteAddress;
-      console.log('-----------------------------------------------------');
-      console.log(
-        new Date().toLocaleString('en-US', {
-          timeZone: 'Asia/Ho_Chi_Minh',
-          hour12: false,
-        }),
-      );
-
-      console.log({ url: req.url });
-      console.log({ body: req.body });
-      console.log({ query: req.query });
-      console.log({ ip: ipAddr });
       if (Object.keys(req.query).length > 0) {
         if (req.query['page']) {
           if (
@@ -100,6 +83,7 @@ async function bootstrap() {
         docExpansion: 'none',
         persistAuthorization: true,
       },
+      customSiteTitle: 'Green App Api',
     });
   }
 
@@ -116,11 +100,15 @@ async function bootstrap() {
     new escapeHTMLpipe(),
   );
 
-  await app.listen(process.env.LISTEN_PORT, process.env.LISTEN_IP);
+  await app.listen(process.env.LISTEN_PORT, process.env.LISTEN_IP, () => {
+    logger.log(
+      `Server document API APP running on http://localhost:${process.env.LISTEN_PORT}/docs`,
+      'Bootstrap',
+    );
+  });
   if (module.hot) {
     module.hot.accept();
     module.hot.dispose(() => app.close());
   }
-  logger.log(`app running on port ${process.env.LISTEN_PORT}`);
 }
 bootstrap();

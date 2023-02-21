@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -23,6 +23,9 @@ import { SeedModule } from './modules/seed/seed.module';
 import { ScreenModule } from './modules/screen/screen.module';
 import { EstimateModule } from './modules/estimate/estimate.module';
 import { TagModule } from './modules/tag/tag.module';
+import { LoggerModule } from './modules/logger/logger.module';
+import { LoggerMiddleware } from './middleware/logger.middleware';
+import { LoggerService } from './modules/logger/logger.service';
 
 @Module({
   imports: [
@@ -69,8 +72,13 @@ import { TagModule } from './modules/tag/tag.module';
     ScreenModule,
     EstimateModule,
     TagModule,
+    LoggerModule,
   ],
   controllers: [AppController],
-  providers: [AppService, FileManagerService],
+  providers: [AppService, FileManagerService, LoggerService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
