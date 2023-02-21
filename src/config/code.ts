@@ -40,5 +40,7 @@ const code = {
   CAN_NOT_DOWN: { code: 1078, type: 'CAN_NOT_DOWN' },
   ESTIMATE_NOT_FOUND: { code: 1079, type: 'ESTIMATE_NOT_FOUND' },
   ESTIMATE_EXISTED: { code: 1080, type: 'ESTIMATE_EXISTED' },
+  TAG_NOT_FOUND: { code: 1081, type: 'TAG_NOT_FOUND' },
+  TAG_EXISTED: { code: 1082, type: 'TAG_EXISTED' },
 };
 export default code;

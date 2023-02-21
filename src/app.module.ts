@@ -22,6 +22,7 @@ import { PreviewModule } from './modules/preview/preview.module';
 import { SeedModule } from './modules/seed/seed.module';
 import { ScreenModule } from './modules/screen/screen.module';
 import { EstimateModule } from './modules/estimate/estimate.module';
+import { TagModule } from './modules/tag/tag.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { EstimateModule } from './modules/estimate/estimate.module';
     SeedModule,
     ScreenModule,
     EstimateModule,
+    TagModule,
   ],
   controllers: [AppController],
   providers: [AppService, FileManagerService],

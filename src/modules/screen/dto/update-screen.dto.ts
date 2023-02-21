@@ -42,17 +42,18 @@ export class UpdateScreenDto {
     // example: `${TypeScreenEnum.APP} | ${TypeScreenEnum.WEB} | ${TypeScreenEnum.UX_UI} | ${TypeScreenEnum.ADMIN_PAGE}`,
   })
   @Expose()
+  @IsOptional()
   @IsEnum(TypeScreenEnum)
   type: TypeScreenEnum;
 
   @ApiProperty({
     type: 'string',
-    enum: TagScreenEnum,
     // example: `${TagScreenEnum.HOME_PAGE} | ${TagScreenEnum.LOGIN_PAGE} | ${TagScreenEnum.UI_PAGE} | ${TagScreenEnum.PROFILE_PAGE} | ${TagScreenEnum.PAYMENT_PAGE} | ${TagScreenEnum.SETTING_PAGE} | ${TagScreenEnum.REGISTER_PAGE} | ${TagScreenEnum.MESSAGE}`,
   })
   @Expose()
-  @IsEnum(TagScreenEnum)
-  tag: TagScreenEnum;
+  @IsOptional()
+  @IsString()
+  tag: string;
 
   @ApiProperty({ type: 'number' })
   @Expose()

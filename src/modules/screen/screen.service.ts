@@ -7,12 +7,15 @@ import { FileManagerService } from '../../utils/file-manager';
 import { CreateScreenDto } from './dto/create-screen.dto';
 import { UpdateScreenDto } from './dto/update-screen.dto';
 import { FilterListScreenDto } from './dto/filter-list-screen.dto';
+import { Tags } from '../../entities/tags';
 
 @Injectable()
 export class ScreenService {
   constructor(
     @InjectRepository(Screens)
     private readonly screenRepo: Repository<Screens>,
+    @InjectRepository(Tags)
+    private readonly tagRepo: Repository<Tags>,
   ) {}
 
   async createOption(body: CreateScreenDto) {
@@ -25,6 +28,10 @@ export class ScreenService {
         index = list[0].index - 1;
       }
       const { nameOption, tag, type, image, schedule, price } = body;
+      const findTag = await this.tagRepo.findOne({ where: { name: tag } });
+      if (!findTag) {
+        throw code.TAG_NOT_FOUND.type;
+      }
       const newOption = await this.screenRepo.create({
         nameOption,
         tag,
@@ -70,7 +77,13 @@ export class ScreenService {
           : checkOption.image;
 
       checkOption.type = type ? type : checkOption.type;
-      checkOption.tag = tag ? tag : checkOption.tag;
+      if (tag) {
+        const findTag = await this.tagRepo.findOne({ where: { name: tag } });
+        if (!findTag) {
+          throw code.TAG_NOT_FOUND.type;
+        }
+        checkOption.tag = tag;
+      }
       checkOption.schedule = schedule ? schedule : checkOption.schedule;
       checkOption.price = price ? price : checkOption.price;
 
