@@ -32,6 +32,9 @@ export class ScreenService {
       if (!findTag) {
         throw code.TAG_NOT_FOUND.type;
       }
+      if (findTag.type !== type) {
+        throw code.DIFFERENT_TYPE.type;
+      }
       const newOption = await this.screenRepo.create({
         nameOption,
         tag,
@@ -81,6 +84,9 @@ export class ScreenService {
         const findTag = await this.tagRepo.findOne({ where: { name: tag } });
         if (!findTag) {
           throw code.TAG_NOT_FOUND.type;
+        }
+        if (findTag.type !== checkOption.type) {
+          throw code.DIFFERENT_TYPE.type;
         }
         checkOption.tag = tag;
       }
