@@ -30,6 +30,8 @@ export class OrderProjectService {
         position,
         presenter,
         email,
+        estimatedCost,
+        options,
       } = body;
       const newOrder = await this.orderRepo.create({
         description,
@@ -43,6 +45,8 @@ export class OrderProjectService {
         position,
         email,
         presenter,
+        estimatedCost,
+        options: options && options.length ? JSON.stringify(options) : null,
       });
       await this.orderRepo.save(newOrder);
       if (newOrder) {
@@ -59,6 +63,7 @@ export class OrderProjectService {
         }
         await this.orderRepo.save(getOrder);
         getOrder.planFile = JSON.parse(getOrder.planFile);
+        getOrder.options = JSON.parse(getOrder.options);
         return getOrder;
       }
       return null;
@@ -69,20 +74,13 @@ export class OrderProjectService {
   }
   async updateOrder(body: UpdateOrderDto) {
     try {
-      const { id, estimatedTime, estimatedCost, isDone } = body;
+      const { id, isDone } = body;
       const checkOrder = await this.orderRepo.findOne({
         where: { orderId: id },
       });
       if (!checkOrder) {
         throw code.ORDER_NOT_FOUND.type;
       }
-      checkOrder.estimatedTime = estimatedTime
-        ? estimatedTime
-        : checkOrder.estimatedTime;
-
-      checkOrder.estimatedCost = estimatedCost
-        ? estimatedCost
-        : checkOrder.estimatedCost;
       checkOrder.isDone = isDone === true ? isDone : checkOrder.isDone;
 
       await this.orderRepo.save(checkOrder);
@@ -110,6 +108,10 @@ export class OrderProjectService {
             ]
           : {},
       });
+      list.forEach((item) => {
+        item.options = JSON.parse(item.options);
+        item.planFile = JSON.parse(item.planFile);
+      });
       return { list, count };
     } catch (e) {
       console.log({ e });
@@ -118,13 +120,15 @@ export class OrderProjectService {
   }
   async detailOrder(id: number) {
     try {
-      const portfolio = await this.orderRepo.findOne({
+      const order = await this.orderRepo.findOne({
         where: { orderId: id },
       });
-      if (!portfolio) {
+      if (!order) {
         throw code.ORDER_NOT_FOUND.type;
       }
-      return portfolio;
+      order.options = JSON.parse(order.options);
+      order.planFile = JSON.parse(order.planFile);
+      return order;
     } catch (e) {
       console.log({ e });
       throw e;

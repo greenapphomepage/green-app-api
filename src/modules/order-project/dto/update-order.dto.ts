@@ -8,12 +8,11 @@ import {
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
+  IsPositive,
   IsString,
   Matches,
   MaxLength,
 } from 'class-validator';
-import config from 'src/config/config';
-import { PlatformEnum } from '../../../enum/platform.enum';
 
 @Exclude()
 export class UpdateOrderDto {
@@ -29,25 +28,25 @@ export class UpdateOrderDto {
   @IsBoolean()
   public isDone: boolean;
 
-  @ApiProperty({
-    type: 'number',
-    example: 'estimatedCost,required',
-    required: true,
-  })
-  @Expose()
-  @IsOptional()
-  @IsInt()
-  public estimatedCost: number;
+  // @ApiProperty({
+  //   type: 'number',
+  //   example: 'estimatedCost,required',
+  //   required: true,
+  // })
+  // @Expose()
+  // @IsOptional()
+  // @IsInt()
+  // public estimatedCost: number;
 
-  @ApiProperty({
-    type: 'number',
-    example: 'estimatedTime,required',
-    required: true,
-  })
-  @Expose()
-  @IsOptional()
-  @IsString()
-  public estimatedTime: string;
+  // @ApiProperty({
+  //   type: 'number',
+  //   example: 'estimatedTime,required',
+  //   required: true,
+  // })
+  // @Expose()
+  // @IsOptional()
+  // @IsString()
+  // public estimatedTime: string;
   // @ApiProperty({
   //   type: 'string',
   //   example: 'projectName,required',

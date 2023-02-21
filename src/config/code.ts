@@ -32,7 +32,13 @@ const code = {
   PORTFOLIO_EXISTED: { code: 1072, type: 'PORTFOLIO_EXISTED' },
   ORDER_NOT_FOUND: { code: 1071, type: 'ORDER_NOT_FOUND' },
   ORDER_EXISTED: { code: 1072, type: 'ORDER_EXISTED' },
-  FEATURE_NOT_FOUND: { code: 1071, type: 'FEATURE_NOT_FOUND' },
-  FEATURE_EXISTED: { code: 1072, type: 'FEATURE_EXISTED' },
+  FEATURE_NOT_FOUND: { code: 1073, type: 'FEATURE_NOT_FOUND' },
+  FEATURE_EXISTED: { code: 1074, type: 'FEATURE_EXISTED' },
+  OPTION_NOT_FOUND: { code: 1075, type: 'OPTION_NOT_FOUND' },
+  OPTION_EXISTED: { code: 1076, type: 'OPTION_EXISTED' },
+  CAN_NOT_UP: { code: 1077, type: 'CAN_NOT_UP' },
+  CAN_NOT_DOWN: { code: 1078, type: 'CAN_NOT_DOWN' },
+  ESTIMATE_NOT_FOUND: { code: 1079, type: 'ESTIMATE_NOT_FOUND' },
+  ESTIMATE_EXISTED: { code: 1080, type: 'ESTIMATE_EXISTED' },
 };
 export default code;

@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 import {
   IsArray,
@@ -16,7 +16,44 @@ import {
 } from 'class-validator';
 import config from 'src/config/config';
 import { PlatformEnum } from '../../../enum/platform.enum';
+import { TypeScreenEnum } from '../../screen/enum/type-screen.enum';
 
+@Exclude()
+export class listOptionDto {
+  public constructor(init?: Partial<listOptionDto>) {
+    Object.assign(this, init);
+  }
+
+  @ApiProperty({
+    type: 'string',
+    enum: TypeScreenEnum,
+    // example: `${TypeScreenEnum.APP} | ${TypeScreenEnum.WEB} | ${TypeScreenEnum.UX_UI} | ${TypeScreenEnum.ADMIN_PAGE}`,
+  })
+  @Expose()
+  @IsOptional()
+  @IsEnum(TypeScreenEnum)
+  type: TypeScreenEnum;
+
+  @ApiProperty({
+    type: 'string',
+    example: 'name',
+    required: true,
+    nullable: false,
+  })
+  @Expose()
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  public nameOption: string;
+
+  @ApiProperty({ type: 'number' })
+  @Expose()
+  @IsOptional()
+  @IsInt()
+  price: number;
+}
+
+@ApiExtraModels(listOptionDto)
 @Exclude()
 export class CreateOrderDto {
   @ApiProperty({
@@ -141,4 +178,24 @@ export class CreateOrderDto {
   @IsOptional()
   @IsEnum(PlatformEnum)
   public platform: PlatformEnum;
+
+  @ApiProperty({
+    type: 'number',
+    example: 'estimatedCost,required',
+    required: true,
+  })
+  @Expose()
+  @IsOptional()
+  @IsInt()
+  public estimatedCost: number;
+
+  @Expose()
+  @ApiProperty({
+    type: 'array',
+    items: { $ref: getSchemaPath(listOptionDto) },
+  })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  public options: listOptionDto[];
 }

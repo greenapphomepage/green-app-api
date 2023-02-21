@@ -4,10 +4,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { PlatformEnum } from '../enum/platform.enum';
+import { Estimate } from './estimate';
 
 @Entity('order_project')
 export class OrderProject {
@@ -53,6 +55,9 @@ export class OrderProject {
     default: PlatformEnum.NOTHING,
   })
   public platform: PlatformEnum;
+  //
+  // @OneToMany(() => Estimate, (fC) => fC.order)
+  // estimate: Estimate;
 
   @Column({ type: 'boolean', default: false })
   public isDone: boolean;
@@ -62,6 +67,9 @@ export class OrderProject {
 
   @Column({ type: 'varchar', nullable: true })
   public estimatedTime: string;
+
+  @Column({ type: 'text', nullable: true })
+  public options: string;
 
   @CreateDateColumn({ name: 'created_at' })
   public created_at: Date;

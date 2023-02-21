@@ -20,6 +20,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { FeatureModule } from './modules/feature/feature.module';
 import { PreviewModule } from './modules/preview/preview.module';
 import { SeedModule } from './modules/seed/seed.module';
+import { ScreenModule } from './modules/screen/screen.module';
+import { EstimateModule } from './modules/estimate/estimate.module';
 
 @Module({
   imports: [
@@ -60,9 +62,11 @@ import { SeedModule } from './modules/seed/seed.module';
     SystemModule,
     PortfolioModule,
     OrderProjectModule,
-    FeatureModule,
-    PreviewModule,
+    // FeatureModule,
+    // PreviewModule,
     SeedModule,
+    ScreenModule,
+    EstimateModule,
   ],
   controllers: [AppController],
   providers: [AppService, FileManagerService],
