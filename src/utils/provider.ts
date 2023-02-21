@@ -211,12 +211,12 @@ export class UtilsProvider {
       }
 
       if (!e.constraints) continue;
+      const rule = lodash.last(Object.keys(e.constraints));
       const error = {
         property: e.property,
         rule: undefined,
-        msg: undefined,
+        msg: e.constraints[rule],
       };
-      const rule = lodash.last(Object.keys(e.constraints));
       if (rule == 'isEmail') {
         error.rule = 'email';
       } else if (rule == 'isNotEmpty') {

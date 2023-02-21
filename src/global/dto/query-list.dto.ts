@@ -6,14 +6,13 @@ import config from 'src/config/config';
 @Exclude()
 export class QueryListDto {
   @Expose()
-  @ApiProperty({ example: '"ASC" | "DESC"', required: false })
-  @IsString()
+  @ApiProperty({ type: 'string', required: false })
   @IsIn(config.SORT_TYPE.value)
   @IsOptional()
   public sort: string;
 
   @Expose()
-  @ApiProperty({ example: 1, required: false })
+  @ApiProperty({ type: 'number', required: false })
   @Type(() => Number)
   @IsInt()
   @IsOptional()
@@ -21,7 +20,7 @@ export class QueryListDto {
   public page: number;
 
   @Expose()
-  @ApiProperty({ example: 10, required: false })
+  @ApiProperty({ type: 'number', required: false })
   @Type(() => Number)
   @IsInt()
   @IsOptional()
@@ -29,7 +28,7 @@ export class QueryListDto {
   public perPage: number;
 
   @Expose()
-  @ApiProperty({ example: 'keyword', required: false })
+  @ApiProperty({ type: 'string', required: false })
   @IsString()
   @IsOptional()
   public keyword: string;
