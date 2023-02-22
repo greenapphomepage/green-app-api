@@ -90,14 +90,14 @@ export class CreateOrderDto {
   public maximumBudget: number;
 
   @ApiProperty({
-    type: 'boolean',
+    type: 'string',
     example: 'governmentSupport,required',
     required: true,
   })
   @Expose()
   @IsOptional()
-  @IsBoolean()
-  public governmentSupport: boolean;
+  @IsString()
+  public governmentSupport: string;
 
   @ApiProperty({
     type: 'string',

@@ -28,8 +28,8 @@ export class OrderProject {
   @Column({ type: 'int', nullable: true })
   public maximumBudget: number;
 
-  @Column({ type: 'boolean', default: false })
-  public governmentSupport: boolean;
+  @Column({ type: 'varchar', nullable: true })
+  public governmentSupport: string;
 
   @Column({ type: 'varchar', length: 255 })
   public customerName: string;
