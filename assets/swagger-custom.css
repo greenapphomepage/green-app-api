@@ -1,0 +1,32 @@
+/* Set the background color of the Swagger UI */
+body {
+    background-color: #f0f0f0;
+}
+
+/* Set the color of the Swagger UI text */
+h1, h2, h3, h4, h5, h6, p {
+    color: #090606FA;
+}
+.scheme-container{
+    background-color: #f0f0f0;
+}
+
+/* Set the background color of the Swagger UI header */
+/*.topbar-wrapper {*/
+/*    background-color: #007bff;*/
+/*}*/
+
+/* Set the background color of the Swagger UI sidebar */
+.sidebar {
+    background-color: #f0f0f0;
+}
+
+/* Set the color of the Swagger UI sidebar links */
+.sidebar a {
+    color: #333;
+}
+
+/* Set the color of the Swagger UI sidebar links when hovered */
+.sidebar a:hover {
+    color: #007bff;
+}
