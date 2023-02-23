@@ -155,7 +155,10 @@ export class TagService {
       if (!checkTag) {
         throw code.TAG_NOT_FOUND.type;
       }
-      const list = await this.tagRepo.find({ order: { index: 'DESC' } });
+      const list = await this.tagRepo.find({
+        where: { type: checkTag.type },
+        order: { index: 'DESC' },
+      });
       const pos = list.map((item) => item.id).indexOf(checkTag.id);
       if (type === 'UP') {
         if (pos === 0) {

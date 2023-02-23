@@ -197,7 +197,10 @@ export class ScreenService {
       if (!checkOption) {
         throw code.OPTION_NOT_FOUND.type;
       }
-      const list = await this.screenRepo.find({ order: { index: 'DESC' } });
+      const list = await this.screenRepo.find({
+        where: { tag: checkOption.tag },
+        order: { index: 'DESC' },
+      });
       const pos = list.map((item) => item.id).indexOf(checkOption.id);
       if (type === 'UP') {
         if (pos === 0) {
