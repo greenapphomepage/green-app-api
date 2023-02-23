@@ -26,12 +26,12 @@ export class TagService {
       }
       const { type, name } = body;
       const checkTags = await this.tagRepo.findOne({
-        where: { type, name, index },
+        where: { type, name },
       });
       if (checkTags) {
         throw code.TAG_EXISTED.type;
       }
-      const newTags = await this.tagRepo.create({ type, name });
+      const newTags = await this.tagRepo.create({ type, name, index });
       await this.tagRepo.save(newTags);
       return newTags;
     } catch (e) {
