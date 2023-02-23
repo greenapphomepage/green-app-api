@@ -202,18 +202,18 @@ export class ScreenService {
         }
         await this.screenRepo.update(
           { id: list[pos - 1].id },
-          { index: list[pos - 1].index - 1 },
+          { index: checkOption.index },
         );
-        checkOption.index = checkOption.index + 1;
+        checkOption.index = list[pos - 1].index;
       } else {
         if (pos === list.length - 1) {
           throw code.CAN_NOT_DOWN.type;
         }
         await this.screenRepo.update(
           { id: list[pos + 1].id },
-          { index: list[pos + 1].index + 1 },
+          { index: checkOption.index },
         );
-        checkOption.index = checkOption.index - 1;
+        checkOption.index = list[pos + 1].index;
       }
       await this.screenRepo.save(checkOption);
       return { msg: 'Done' };

@@ -160,18 +160,18 @@ export class TagService {
         }
         await this.tagRepo.update(
           { id: list[pos - 1].id },
-          { index: list[pos - 1].index - 1 },
+          { index: checkTag.index },
         );
-        checkTag.index = checkTag.index + 1;
+        checkTag.index = list[pos - 1].index;
       } else {
         if (pos === list.length - 1) {
           throw code.CAN_NOT_DOWN.type;
         }
         await this.tagRepo.update(
           { id: list[pos + 1].id },
-          { index: list[pos + 1].index + 1 },
+          { index: checkTag.index },
         );
-        checkTag.index = checkTag.index - 1;
+        checkTag.index = list[pos + 1].index;
       }
       await this.tagRepo.save(checkTag);
       return { msg: 'Done' };

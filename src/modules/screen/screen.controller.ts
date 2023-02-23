@@ -61,7 +61,7 @@ export class ScreenController {
     try {
       query.perPage = !query.perPage ? 10 : query.perPage;
       query.page = !query.page ? 1 : query.page;
-      query.sort ? query.sort.toUpperCase() : 'DESC';
+      query.sort = query.sort ? query.sort.toUpperCase() : 'DESC';
       const result = await this.screenService.listOption(query);
       const pagi = (result.count / query.perPage) | 0;
       const pages = result.count % query.perPage == 0 ? pagi : pagi + 1;
