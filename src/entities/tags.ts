@@ -21,6 +21,9 @@ export class Tags {
   @Column({ type: 'varchar', length: 255 })
   public type: string;
 
+  @Column({ type: 'int', default: 0 })
+  public index: number;
+
   @CreateDateColumn({ name: 'created_at' })
   public created_at: Date;
 

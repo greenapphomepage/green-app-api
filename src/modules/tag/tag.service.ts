@@ -17,8 +17,17 @@ export class TagService {
 
   async createTags(body: CreateTagDto) {
     try {
+      let index: number;
+      const list = await this.tagRepo.find({ order: { id: 'DESC' } });
+      if (!list.length) {
+        index = 1000;
+      } else {
+        index = list[0].index - 1;
+      }
       const { type, name } = body;
-      const checkTags = await this.tagRepo.findOne({ where: { type, name } });
+      const checkTags = await this.tagRepo.findOne({
+        where: { type, name, index },
+      });
       if (checkTags) {
         throw code.TAG_EXISTED.type;
       }
@@ -62,7 +71,7 @@ export class TagService {
       const [list, count] = await this.tagRepo.findAndCount({
         skip: (page - 1) * perPage,
         take: perPage,
-        order: { id: sort as SORT },
+        order: { index: sort as SORT },
         where: {
           ...(type ? { type } : {}),
           ...(keyword ? { name: Like(`%${keyword}%`) } : {}),
@@ -131,6 +140,43 @@ export class TagService {
       return { msg: 'Done' };
     } catch (e) {
       console.log(e);
+      throw e;
+    }
+  }
+
+  async upDown(id: number, type: 'UP' | 'DOWN') {
+    try {
+      const checkTag = await this.tagRepo.findOne({
+        where: { id },
+      });
+      if (!checkTag) {
+        throw code.TAG_NOT_FOUND.type;
+      }
+      const list = await this.tagRepo.find({ order: { index: 'DESC' } });
+      const pos = list.map((item) => item.id).indexOf(checkTag.id);
+      if (type === 'UP') {
+        if (pos === 0) {
+          throw code.CAN_NOT_UP.type;
+        }
+        await this.tagRepo.update(
+          { id: list[pos - 1].id },
+          { index: list[pos - 1].index - 1 },
+        );
+        checkTag.index = checkTag.index + 1;
+      } else {
+        if (pos === list.length - 1) {
+          throw code.CAN_NOT_DOWN.type;
+        }
+        await this.tagRepo.update(
+          { id: list[pos + 1].id },
+          { index: list[pos + 1].index + 1 },
+        );
+        checkTag.index = checkTag.index - 1;
+      }
+      await this.tagRepo.save(checkTag);
+      return { msg: 'Done' };
+    } catch (e) {
+      console.log({ e });
       throw e;
     }
   }

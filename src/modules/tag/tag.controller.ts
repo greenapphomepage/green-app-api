@@ -17,6 +17,7 @@ import { DeletePortfolioDto } from '../portfolio/dto/delete-portfolio.dto';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { FilterListTagDto } from './dto/filter-tag.dto';
+import { UpDownDto } from '../screen/dto/up-down.dto';
 
 @ApiTags('Tag')
 @Controller('tag')
@@ -115,6 +116,22 @@ export class TagController {
         order = await this.tagService.deleteAll();
       }
       return SendResponse.success(order);
+    } catch (e) {
+      return SendResponse.error(e);
+    }
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Up or down one row' })
+  @Auth({ roles: ['SUPER_ADMIN'] })
+  @Put('up-down/:id')
+  async upDown(
+    @Body() body: UpDownDto,
+    @Param('id', CustomIntPipe) id: number,
+  ) {
+    try {
+      const result = await this.tagService.upDown(id, body.type);
+      return SendResponse.success(result);
     } catch (e) {
       return SendResponse.error(e);
     }
