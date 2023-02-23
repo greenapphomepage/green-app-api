@@ -113,6 +113,9 @@ export class ScreenService {
           ...(keyword ? { nameOption: Like(`%${keyword}%`) } : {}),
         },
       });
+      list.forEach((item) => {
+        delete item.index;
+      });
       return { list, count };
     } catch (e) {
       console.log({ e });

@@ -78,6 +78,9 @@ export class TagService {
         },
       });
 
+      list.forEach((item) => {
+        delete item.index;
+      });
       return { list, count };
     } catch (e) {
       console.log({ e });
