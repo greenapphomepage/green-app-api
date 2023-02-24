@@ -7,6 +7,7 @@ import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { FilterListTagDto } from './dto/filter-tag.dto';
 import { Screens } from '../../entities/screen';
+import { Types } from '../../entities/type';
 
 @Injectable()
 export class TagService {
@@ -15,6 +16,9 @@ export class TagService {
     private readonly tagRepo: Repository<Tags>,
     @InjectRepository(Screens)
     private readonly screenRepo: Repository<Screens>,
+
+    @InjectRepository(Types)
+    private readonly typeRepo: Repository<Types>,
   ) {}
 
   async createTags(body: CreateTagDto) {
@@ -27,6 +31,10 @@ export class TagService {
         index = list[0].index - 1;
       }
       const { type, name } = body;
+      const checkType = await this.typeRepo.findOne({ where: { key: type } });
+      if (!checkType) {
+        throw code.TYPE_NOT_FOUND.type;
+      }
       const checkTags = await this.tagRepo.findOne({
         where: { type, name },
       });
@@ -51,6 +59,10 @@ export class TagService {
         throw code.TAG_NOT_FOUND.type;
       }
       if (type) {
+        const checkType = await this.typeRepo.findOne({ where: { key: type } });
+        if (!checkType) {
+          throw code.TYPE_NOT_FOUND.type;
+        }
         const getTagsByType = await this.tagRepo.findOne({
           where: { type, name },
         });
@@ -108,7 +120,7 @@ export class TagService {
         where: { id },
       });
       if (!tag) {
-        throw code.OPTION_NOT_FOUND.type;
+        throw code.TAG_NOT_FOUND.type;
       }
       const option = await this.screenRepo.find({ where: { tag: tag.name } });
       await this.screenRepo.remove(option);
@@ -139,7 +151,7 @@ export class TagService {
           where: { id },
         });
         if (!tag) {
-          throw code.OPTION_NOT_FOUND.type;
+          throw code.TAG_NOT_FOUND.type;
         }
         const option = await this.screenRepo.find({ where: { tag: tag.name } });
         await this.screenRepo.remove(option);

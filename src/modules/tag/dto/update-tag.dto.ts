@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import { IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 import { TypeScreenEnum } from '../../screen/enum/type-screen.enum';
 
 @Exclude()
@@ -15,11 +21,12 @@ export class UpdateTagDto {
 
   @ApiProperty({
     type: 'string',
-    enum: TypeScreenEnum,
-    // example: `${TypeScreenEnum.APP} | ${TypeScreenEnum.WEB} | ${TypeScreenEnum.UX_UI} | ${TypeScreenEnum.ADMIN_PAGE}`,
+    description: 'key of type',
+    default: 'UX_UI',
   })
   @Expose()
   @IsOptional()
-  @IsEnum(TypeScreenEnum)
-  type: TypeScreenEnum;
+  @IsString()
+  @MaxLength(255)
+  type: string;
 }

@@ -103,7 +103,7 @@ export class TypeService {
         where: { id },
       });
       if (!type) {
-        throw code.OPTION_NOT_FOUND.type;
+        throw code.TYPE_NOT_FOUND.type;
       }
       const tags = await this.tagRepo.find({ where: { type: type.name } });
       const ids = tags.map((tag) => tag.id);
@@ -138,7 +138,7 @@ export class TypeService {
           where: { id },
         });
         if (!type) {
-          throw code.OPTION_NOT_FOUND.type;
+          throw code.TYPE_NOT_FOUND.type;
         }
         const tags = await this.tagRepo.find({ where: { type: type.name } });
         const ids = tags.map((tag) => tag.id);
