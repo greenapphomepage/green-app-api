@@ -23,6 +23,18 @@ export class listOptionDto {
   public constructor(init?: Partial<listOptionDto>) {
     Object.assign(this, init);
   }
+
+  @ApiProperty({
+    type: 'string',
+    description: 'key of type',
+    default: 'UX_UI',
+  })
+  @Expose()
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  type: string;
+
   @ApiProperty({
     type: 'string',
     example: 'name',
@@ -43,35 +55,6 @@ export class listOptionDto {
 }
 
 @ApiExtraModels(listOptionDto)
-@Exclude()
-export class listTypeDto {
-  public constructor(init?: Partial<listTypeDto>) {
-    Object.assign(this, init);
-  }
-
-  @ApiProperty({
-    type: 'string',
-    description: 'key of type',
-    default: 'UX_UI',
-  })
-  @Expose()
-  @IsOptional()
-  @IsString()
-  @MaxLength(255)
-  type: string;
-
-  @Expose()
-  @ApiProperty({
-    type: 'array',
-    items: { $ref: getSchemaPath(listOptionDto) },
-  })
-  @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  public items: listOptionDto[];
-}
-
-@ApiExtraModels(listTypeDto)
 @Exclude()
 export class CreateOrderDto {
   @ApiProperty({
@@ -210,10 +193,10 @@ export class CreateOrderDto {
   @Expose()
   @ApiProperty({
     type: 'array',
-    items: { $ref: getSchemaPath(listTypeDto) },
+    items: { $ref: getSchemaPath(listOptionDto) },
   })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
-  public options: listTypeDto[];
+  public options: listOptionDto[];
 }
