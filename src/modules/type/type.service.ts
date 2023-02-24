@@ -26,14 +26,14 @@ export class TypeService {
 
   async createTypes(body: CreateTypeDto) {
     try {
-      const { key, name } = body;
+      const { name } = body;
       const checkTypes = await this.typeRepo.findOne({
-        where: { key },
+        where: { name },
       });
       if (checkTypes) {
         throw code.TYPE_EXISTED.type;
       }
-      const newTypes = await this.typeRepo.create({ key, name });
+      const newTypes = await this.typeRepo.create({ name });
       await this.typeRepo.save(newTypes);
       return newTypes;
     } catch (e) {
@@ -43,22 +43,14 @@ export class TypeService {
   }
   async updateTypes(body: UpdateTypeDto) {
     try {
-      const { id, key, name } = body;
+      const { id, name } = body;
       const checkTypes = await this.typeRepo.findOne({
         where: { id },
       });
       if (!checkTypes) {
         throw code.TYPE_NOT_FOUND.type;
       }
-      if (key) {
-        const getTypesByKey = await this.typeRepo.findOne({
-          where: { key },
-        });
-        if (getTypesByKey && key !== checkTypes.key) {
-          throw code.ROLE_EXISTED.type;
-        }
-        checkTypes.key = key;
-      }
+
       checkTypes.name = name ? name : checkTypes.name;
       await this.typeRepo.save(checkTypes);
       return checkTypes;

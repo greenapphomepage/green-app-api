@@ -31,7 +31,7 @@ export class TagService {
         index = list[0].index - 1;
       }
       const { type, name } = body;
-      const checkType = await this.typeRepo.findOne({ where: { key: type } });
+      const checkType = await this.typeRepo.findOne({ where: { name: type } });
       if (!checkType) {
         throw code.TYPE_NOT_FOUND.type;
       }
@@ -59,7 +59,9 @@ export class TagService {
         throw code.TAG_NOT_FOUND.type;
       }
       if (type) {
-        const checkType = await this.typeRepo.findOne({ where: { key: type } });
+        const checkType = await this.typeRepo.findOne({
+          where: { name: type },
+        });
         if (!checkType) {
           throw code.TYPE_NOT_FOUND.type;
         }

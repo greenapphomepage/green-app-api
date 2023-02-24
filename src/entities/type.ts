@@ -15,8 +15,8 @@ export class Types {
   @PrimaryGeneratedColumn('increment', { type: 'bigint', unsigned: true })
   public id: number;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
-  public key: string;
+  // @Column({ type: 'varchar', length: 255, unique: true })
+  // public key: string;
 
   @Column({ type: 'varchar', length: 255 })
   public name: string;
