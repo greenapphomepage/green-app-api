@@ -23,17 +23,6 @@ export class listOptionDto {
   public constructor(init?: Partial<listOptionDto>) {
     Object.assign(this, init);
   }
-
-  @ApiProperty({
-    type: 'string',
-    enum: TypeScreenEnum,
-    // example: `${TypeScreenEnum.APP} | ${TypeScreenEnum.WEB} | ${TypeScreenEnum.UX_UI} | ${TypeScreenEnum.ADMIN_PAGE}`,
-  })
-  @Expose()
-  @IsOptional()
-  @IsEnum(TypeScreenEnum)
-  type: TypeScreenEnum;
-
   @ApiProperty({
     type: 'string',
     example: 'name',
@@ -54,6 +43,35 @@ export class listOptionDto {
 }
 
 @ApiExtraModels(listOptionDto)
+@Exclude()
+export class listTypeDto {
+  public constructor(init?: Partial<listTypeDto>) {
+    Object.assign(this, init);
+  }
+
+  @ApiProperty({
+    type: 'string',
+    description: 'key of type',
+    default: 'UX_UI',
+  })
+  @Expose()
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  type: string;
+
+  @Expose()
+  @ApiProperty({
+    type: 'array',
+    items: { $ref: getSchemaPath(listOptionDto) },
+  })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  public items: listOptionDto[];
+}
+
+@ApiExtraModels(listTypeDto)
 @Exclude()
 export class CreateOrderDto {
   @ApiProperty({
@@ -192,10 +210,10 @@ export class CreateOrderDto {
   @Expose()
   @ApiProperty({
     type: 'array',
-    items: { $ref: getSchemaPath(listOptionDto) },
+    items: { $ref: getSchemaPath(listTypeDto) },
   })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
-  public options: listOptionDto[];
+  public options: listTypeDto[];
 }
