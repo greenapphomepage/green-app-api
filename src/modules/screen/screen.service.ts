@@ -28,11 +28,12 @@ export class ScreenService {
         index = list[0].index - 1;
       }
       const { nameOption, tag, type, image, schedule, price } = body;
-      const findTag = await this.tagRepo.findOne({ where: { name: tag } });
-      if (!findTag) {
+      const findTag = await this.tagRepo.find({ where: { name: tag } });
+      if (!findTag.length) {
         throw code.TAG_NOT_FOUND.type;
       }
-      if (findTag.type !== type) {
+      const tempTag = findTag.map((item) => item.type);
+      if (!tempTag.includes(type)) {
         throw code.DIFFERENT_TYPE.type;
       }
       const newOption = await this.screenRepo.create({

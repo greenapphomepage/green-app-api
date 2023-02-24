@@ -6,13 +6,15 @@ import code from '../../config/code';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { FilterListTagDto } from './dto/filter-tag.dto';
-import { FileManagerService } from '../../utils/file-manager';
+import { Screens } from '../../entities/screen';
 
 @Injectable()
 export class TagService {
   constructor(
     @InjectRepository(Tags)
     private readonly tagRepo: Repository<Tags>,
+    @InjectRepository(Screens)
+    private readonly screenRepo: Repository<Screens>,
   ) {}
 
   async createTags(body: CreateTagDto) {
@@ -102,13 +104,15 @@ export class TagService {
 
   async deleteTags(id: number) {
     try {
-      const option = await this.tagRepo.findOne({
+      const tag = await this.tagRepo.findOne({
         where: { id },
       });
-      if (!option) {
+      if (!tag) {
         throw code.OPTION_NOT_FOUND.type;
       }
-      await this.tagRepo.remove(option);
+      const option = await this.screenRepo.find({ where: { tag: tag.name } });
+      await this.screenRepo.remove(option);
+      await this.tagRepo.remove(tag);
       return 'Done';
     } catch (e) {
       console.log({ e });
@@ -118,8 +122,8 @@ export class TagService {
 
   async deleteAll() {
     try {
+      await this.screenRepo.clear();
       await this.tagRepo.clear();
-      FileManagerService.RemovePictureAll('screen');
       return { msg: 'Done' };
     } catch (e) {
       throw e;
@@ -131,13 +135,15 @@ export class TagService {
     try {
       const listSelected: Tags[] = [];
       for (const id of ids) {
-        const option = await this.tagRepo.findOne({
+        const tag = await this.tagRepo.findOne({
           where: { id },
         });
-        if (!option) {
+        if (!tag) {
           throw code.OPTION_NOT_FOUND.type;
         }
-        listSelected.push(option);
+        const option = await this.screenRepo.find({ where: { tag: tag.name } });
+        await this.screenRepo.remove(option);
+        listSelected.push(tag);
       }
       await this.tagRepo.remove(listSelected);
       return { msg: 'Done' };
