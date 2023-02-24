@@ -43,5 +43,7 @@ const code = {
   TAG_NOT_FOUND: { code: 1081, type: 'TAG_NOT_FOUND' },
   TAG_EXISTED: { code: 1082, type: 'TAG_EXISTED' },
   DIFFERENT_TYPE: { code: 1083, type: 'DIFFERENT_TYPE' },
+  TYPE_NOT_FOUND: { code: 1084, type: 'TYPE_NOT_FOUND' },
+  TYPE_EXISTED: { code: 1085, type: 'TYPE_EXISTED' },
 };
 export default code;

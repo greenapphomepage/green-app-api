@@ -82,11 +82,12 @@ export class ScreenService {
 
       checkOption.type = type ? type : checkOption.type;
       if (tag) {
-        const findTag = await this.tagRepo.findOne({ where: { name: tag } });
-        if (!findTag) {
+        const findTag = await this.tagRepo.find({ where: { name: tag } });
+        if (!findTag.length) {
           throw code.TAG_NOT_FOUND.type;
         }
-        if (findTag.type !== checkOption.type) {
+        const tempTag = findTag.map((item) => item.type);
+        if (!tempTag.includes(type)) {
           throw code.DIFFERENT_TYPE.type;
         }
         checkOption.tag = tag;

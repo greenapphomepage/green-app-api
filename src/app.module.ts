@@ -26,6 +26,7 @@ import { TagModule } from './modules/tag/tag.module';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { LoggerService } from './modules/logger/logger.service';
+import { TypeModule } from './modules/type/type.module';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { LoggerService } from './modules/logger/logger.service';
     EstimateModule,
     TagModule,
     LoggerModule,
+    TypeModule,
   ],
   controllers: [AppController],
   providers: [AppService, FileManagerService, LoggerService],
