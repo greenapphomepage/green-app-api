@@ -38,13 +38,12 @@ export class UpdateScreenDto {
 
   @ApiProperty({
     type: 'string',
-    enum: TypeScreenEnum,
     // example: `${TypeScreenEnum.APP} | ${TypeScreenEnum.WEB} | ${TypeScreenEnum.UX_UI} | ${TypeScreenEnum.ADMIN_PAGE}`,
   })
   @Expose()
   @IsOptional()
-  @IsEnum(TypeScreenEnum)
-  type: TypeScreenEnum;
+  @IsString()
+  type: string;
 
   @ApiProperty({
     type: 'string',

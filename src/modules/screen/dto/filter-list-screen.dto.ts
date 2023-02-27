@@ -12,10 +12,10 @@ import { TypeScreenEnum } from '../enum/type-screen.enum';
 
 export class FilterListScreenDto extends QueryListDto {
   @Expose()
-  @ApiProperty({ type: 'string', enum: TypeScreenEnum, required: false })
-  @IsEnum(TypeScreenEnum)
+  @ApiProperty({ type: 'string', required: false })
+  @IsString()
   @IsOptional()
-  public type: TypeScreenEnum;
+  public type: string;
 
   @Expose()
   @ApiProperty({ type: 'string', required: false })
