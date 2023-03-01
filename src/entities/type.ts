@@ -17,6 +17,8 @@ export class Types {
 
   // @Column({ type: 'varchar', length: 255, unique: true })
   // public key: string;
+  @Column({ type: 'int', default: 0 })
+  public index: number;
 
   @Column({ type: 'varchar', length: 255 })
   public name: string;

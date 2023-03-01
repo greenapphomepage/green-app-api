@@ -17,6 +17,7 @@ import { DeletePortfolioDto } from '../portfolio/dto/delete-portfolio.dto';
 import { CreateTypeDto } from './dto/create-type.dto';
 import { UpdateTypeDto } from './dto/update-type.dto';
 import { QueryListDto } from '../../global/dto/query-list.dto';
+import { UpDownDto } from '../screen/dto/up-down.dto';
 
 @ApiTags('Type')
 @Controller('type')
@@ -115,6 +116,22 @@ export class TypeController {
         order = await this.typeService.deleteAll();
       }
       return SendResponse.success(order);
+    } catch (e) {
+      return SendResponse.error(e);
+    }
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Up or down one row' })
+  @Auth({ roles: ['SUPER_ADMIN'] })
+  @Put('up-down/:id')
+  async upDown(
+    @Body() body: UpDownDto,
+    @Param('id', CustomIntPipe) id: number,
+  ) {
+    try {
+      const result = await this.typeService.upDown(id, body.type);
+      return SendResponse.success(result);
     } catch (e) {
       return SendResponse.error(e);
     }

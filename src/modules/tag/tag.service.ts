@@ -24,7 +24,7 @@ export class TagService {
   async createTags(body: CreateTagDto) {
     try {
       let index: number;
-      const list = await this.tagRepo.find({ order: { id: 'DESC' } });
+      const list = await this.tagRepo.find({ order: { index: 'ASC' } });
       if (!list.length) {
         index = 1000;
       } else {

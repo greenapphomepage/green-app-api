@@ -30,8 +30,15 @@ export class TypeService {
   async createTypes(body: CreateTypeDto) {
     try {
       const { name } = body;
+      let index: number;
+      const list = await this.tagRepo.find({ order: { index: 'ASC' } });
+      if (!list.length) {
+        index = 1000;
+      } else {
+        index = list[0].index - 1;
+      }
       const checkTypes = await this.typeRepo.findOne({
-        where: { name },
+        where: { name, index },
       });
       if (checkTypes) {
         throw code.TYPE_EXISTED.type;
@@ -152,6 +159,45 @@ export class TypeService {
       return { msg: 'Done' };
     } catch (e) {
       console.log(e);
+      throw e;
+    }
+  }
+
+  async upDown(id: number, type: 'UP' | 'DOWN') {
+    try {
+      const checkType = await this.typeRepo.findOne({
+        where: { id },
+      });
+      if (!checkType) {
+        throw code.TAG_NOT_FOUND.type;
+      }
+      const list = await this.typeRepo.find({
+        order: { index: 'DESC' },
+      });
+      const pos = list.map((item) => item.id).indexOf(checkType.id);
+      if (type === 'UP') {
+        if (pos === 0) {
+          throw code.CAN_NOT_UP.type;
+        }
+        await this.typeRepo.update(
+          { id: list[pos - 1].id },
+          { index: checkType.index },
+        );
+        checkType.index = list[pos - 1].index;
+      } else {
+        if (pos === list.length - 1) {
+          throw code.CAN_NOT_DOWN.type;
+        }
+        await this.typeRepo.update(
+          { id: list[pos + 1].id },
+          { index: checkType.index },
+        );
+        checkType.index = list[pos + 1].index;
+      }
+      await this.typeRepo.save(checkType);
+      return { msg: 'Done' };
+    } catch (e) {
+      console.log({ e });
       throw e;
     }
   }

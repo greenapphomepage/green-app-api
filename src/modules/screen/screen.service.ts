@@ -21,7 +21,7 @@ export class ScreenService {
   async createOption(body: CreateScreenDto) {
     try {
       let index: number;
-      const list = await this.screenRepo.find({ order: { id: 'DESC' } });
+      const list = await this.screenRepo.find({ order: { index: 'ASC' } });
       if (!list.length) {
         index = 1000;
       } else {
