@@ -81,7 +81,7 @@ export class TypeService {
       const [list, count] = await this.typeRepo.findAndCount({
         skip: (page - 1) * perPage,
         take: perPage,
-        order: { id: sort as SORT },
+        order: { index: sort as SORT },
         where: {
           ...(keyword ? { name: Like(`%${keyword}%`) } : {}),
         },
