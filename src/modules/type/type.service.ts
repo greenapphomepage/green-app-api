@@ -38,12 +38,12 @@ export class TypeService {
         index = list[0].index - 1;
       }
       const checkTypes = await this.typeRepo.findOne({
-        where: { name, index },
+        where: { name },
       });
       if (checkTypes) {
         throw code.TYPE_EXISTED.type;
       }
-      const newTypes = await this.typeRepo.create({ name });
+      const newTypes = await this.typeRepo.create({ name, index });
       await this.typeRepo.save(newTypes);
       return newTypes;
     } catch (e) {
