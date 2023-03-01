@@ -10,6 +10,7 @@ import { QueryListDto } from '../../global/dto/query-list.dto';
 import { TagService } from '../tag/tag.service';
 import { Tags } from '../../entities/tags';
 import { Screens } from '../../entities/screen';
+import { OrderProjectService } from '../order-project/order-project.service';
 
 @Injectable()
 export class TypeService {
@@ -22,6 +23,8 @@ export class TypeService {
     private readonly tagRepo: Repository<Tags>,
     @InjectRepository(Screens)
     private readonly screenRepo: Repository<Screens>,
+
+    private readonly orderService: OrderProjectService,
   ) {}
 
   async createTypes(body: CreateTypeDto) {
@@ -51,7 +54,13 @@ export class TypeService {
         throw code.TYPE_NOT_FOUND.type;
       }
 
-      checkTypes.name = name ? name : checkTypes.name;
+      if (name && name !== checkTypes.name) {
+        await this.tagRepo.update({ type: checkTypes.name }, { type: name });
+        await this.screenRepo.update({ type: checkTypes.name }, { type: name });
+        await this.orderService.updateOptionByType(checkTypes.name, name);
+        checkTypes.name = name;
+      }
+
       await this.typeRepo.save(checkTypes);
       return checkTypes;
     } catch (e) {

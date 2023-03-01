@@ -6,10 +6,12 @@ import { Types } from '../../entities/type';
 import { Tags } from '../../entities/tags';
 import { Screens } from '../../entities/screen';
 import { TagService } from '../tag/tag.service';
+import { OrderProjectService } from '../order-project/order-project.service';
+import { OrderProject } from '../../entities/order-project';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Types, Tags, Screens])],
-  providers: [TypeService, TagService],
+  imports: [TypeOrmModule.forFeature([Types, Tags, Screens, OrderProject])],
+  providers: [TypeService, TagService, OrderProjectService],
   controllers: [TypeController],
 })
 export class TypeModule {}

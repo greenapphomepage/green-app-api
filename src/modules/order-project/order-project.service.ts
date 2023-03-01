@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Like, Repository } from 'typeorm';
+import { IsNull, Like, Not, Repository } from 'typeorm';
 import { OrderProject } from '../../entities/order-project';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileManagerService } from '../../utils/file-manager';
@@ -188,6 +188,32 @@ export class OrderProjectService {
     } catch (e) {
       throw e;
       console.log(e);
+    }
+  }
+
+  async updateOptionByType(olderType, newType): Promise<void> {
+    try {
+      const orders = await this.orderRepo.find({
+        where: { options: Not(IsNull()) },
+      });
+      for (const order of orders) {
+        const options: Array<{
+          type: string;
+          nameOption: string;
+          price: number;
+        }> = JSON.parse(order.options);
+        options.forEach((item) => {
+          if (item.type === olderType) {
+            item.type = newType;
+          }
+        });
+        await this.orderRepo.update(
+          { orderId: order.orderId },
+          { options: JSON.stringify(options) },
+        );
+      }
+    } catch (e) {
+      throw e;
     }
   }
 }
