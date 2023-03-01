@@ -58,6 +58,10 @@ export class TagService {
       if (!checkTags) {
         throw code.TAG_NOT_FOUND.type;
       }
+      if (name && name !== checkTags.name) {
+        await this.screenRepo.update({ tag: checkTags.name }, { tag: name });
+        checkTags.name = name;
+      }
       if (type) {
         const checkType = await this.typeRepo.findOne({
           where: { name: type },
@@ -73,7 +77,7 @@ export class TagService {
         }
         checkTags.type = type;
       }
-      checkTags.name = name ? name : checkTags.name;
+
       await this.tagRepo.save(checkTags);
       return checkTags;
     } catch (e) {
