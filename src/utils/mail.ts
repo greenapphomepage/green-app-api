@@ -41,16 +41,19 @@ export class MailService {
 
   async sendNotifyMailToCustomer(
     url: string,
+    price: number,
     email: string,
     receiver_email: string,
   ) {
     await this.mailerService.sendMail({
+      from: email,
       to: receiver_email,
-      subject: 'Xin chào! Cảm ơn bạn đã tham gia với chúng tôi!',
+      subject: '[인썸니아] 이승우님을 위한 예상 개발 견적서',
       template: 'notify_mail',
       context: {
         name: email,
         url: url,
+        price: price,
       },
     });
   }

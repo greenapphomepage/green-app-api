@@ -27,6 +27,7 @@ import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { LoggerService } from './modules/logger/logger.service';
 import { TypeModule } from './modules/type/type.module';
+import { MailService } from './utils/mail';
 
 @Module({
   imports: [
@@ -39,16 +40,18 @@ import { TypeModule } from './modules/type/type.module';
     }),
     MailerModule.forRoot({
       transport: {
+        service: 'Yandex',
         host: process.env.MAIL_HOST,
-
+        port: +process.env.MAIL_PORT,
         secure: false,
+        ignoreTLS: true,
         auth: {
           user: process.env.MAIL_USERNAME,
           pass: process.env.MAIL_PASSWORD,
         },
       },
       defaults: {
-        from: '"No Reply" <server@thang.info> ',
+        from: '"No Reply" <greenapp@naver.com> ',
       },
       template: {
         dir: join(__dirname, 'mail', 'templates'),
@@ -77,7 +80,7 @@ import { TypeModule } from './modules/type/type.module';
     TypeModule,
   ],
   controllers: [AppController],
-  providers: [AppService, FileManagerService, LoggerService],
+  providers: [AppService, FileManagerService, LoggerService, MailService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
