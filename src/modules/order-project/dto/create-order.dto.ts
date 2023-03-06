@@ -167,7 +167,8 @@ export class CreateOrderDto {
   })
   @Expose()
   @IsNotEmpty()
-  @IsPhoneNumber()
+  @IsString()
+  // @IsPhoneNumber()
   public phone: string;
 
   @ApiProperty({
