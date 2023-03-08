@@ -66,8 +66,8 @@ export class CreateOrderDto {
   @Expose()
   @IsOptional()
   @IsString()
-  @Matches(config.REGEX_LETTER.value)
-  @Matches(config.NOT_ONLY_SPACES.value)
+  // @Matches(config.REGEX_LETTER.value)
+  // @Matches(config.NOT_ONLY_SPACES.value)
   public projectName: string;
 
   @ApiProperty({
