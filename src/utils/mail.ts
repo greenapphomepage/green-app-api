@@ -48,7 +48,7 @@ export class MailService {
     await this.mailerService.sendMail({
       from: email,
       to: receiver_email,
-      subject: '[인썸니아] 이승우님을 위한 예상 개발 견적서',
+      subject: '[지엠포컴퍼니] 이승우님을 위한 예상 개발 견적서',
       template: 'notify_mail',
       context: {
         name: email,
