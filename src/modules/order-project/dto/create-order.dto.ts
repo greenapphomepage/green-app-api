@@ -82,7 +82,6 @@ export class CreateOrderDto {
 
   @ApiProperty({
     type: 'number',
-    example: 'maximumBudget,required',
     required: true,
   })
   @Expose()

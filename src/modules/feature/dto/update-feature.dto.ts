@@ -22,8 +22,8 @@ export class UpdateFeatureDto {
   @IsOptional()
   @IsString()
   @MaxLength(255)
-  @Matches(config.REGEX_LETTER.value)
-  @Matches(config.NOT_ONLY_SPACES.value)
+  // @Matches(config.REGEX_LETTER.value)
+  // @Matches(config.NOT_ONLY_SPACES.value)
   public featureName: string;
 
   @ApiProperty({ type: 'string', example: 'featureKey,required' })
@@ -31,8 +31,8 @@ export class UpdateFeatureDto {
   @IsOptional()
   @IsString()
   @MaxLength(30)
-  @Matches(config.REGEX_LETTER.value)
-  @Matches(config.NOT_ONLY_SPACES.value)
+  // @Matches(config.REGEX_LETTER.value)
+  // @Matches(config.NOT_ONLY_SPACES.value)
   public featureKey: string;
 
   @ApiProperty({ type: 'string', example: 'extra' })
