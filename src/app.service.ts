@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MailService } from './utils/mail';
+import * as process from 'process';
 
 @Injectable()
 export class AppService {
@@ -12,7 +13,7 @@ export class AppService {
       await this.mailer.sendNotifyMailToCustomer(
         'test',
         1000,
-        'ilovebossvtt@yandex.com',
+        process.env.MAIL_USERNAME,
         'congthangmyth1802@gmail.com',
       );
       return true;

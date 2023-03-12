@@ -28,6 +28,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 import { LoggerService } from './modules/logger/logger.service';
 import { TypeModule } from './modules/type/type.module';
 import { MailService } from './utils/mail';
+import * as process from 'process';
 
 @Module({
   imports: [
@@ -40,18 +41,24 @@ import { MailService } from './utils/mail';
     }),
     MailerModule.forRoot({
       transport: {
-        service: 'Yandex',
+        service: process.env.MAIL_SERVICE,
         host: process.env.MAIL_HOST,
         port: +process.env.MAIL_PORT,
-        secure: false,
+        secure: true,
         ignoreTLS: true,
+        tls: {
+          minDHSize: 512,
+          minVersion: 'TLSv1',
+          maxVersion: 'TLSv1.3',
+          ciphers: 'ALL',
+        },
         auth: {
           user: process.env.MAIL_USERNAME,
           pass: process.env.MAIL_PASSWORD,
         },
       },
       defaults: {
-        from: '"No Reply" <greenapp@naver.com> ',
+        from: '"No Reply" <greenappsblog@naver.com> ',
       },
       template: {
         dir: join(__dirname, 'mail', 'templates'),
