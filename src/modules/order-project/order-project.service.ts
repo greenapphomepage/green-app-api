@@ -73,6 +73,7 @@ export class OrderProjectService {
           options,
           getOrder.estimatedCost,
           `table${getOrder.orderId}`,
+          getOrder.platform,
         );
         await this.mailer.sendNotifyMailToCustomer(
           `${process.env.SERVER_HOST}/table/table${getOrder.orderId}.pdf`,
