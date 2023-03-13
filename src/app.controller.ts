@@ -13,4 +13,8 @@ export class AppController {
   getTable() {
     return this.appService.testTable();
   }
+  @Get('format')
+  getFormat() {
+    return this.appService.testFormat();
+  }
 }

@@ -3,6 +3,7 @@ import * as path from 'path';
 import PDFDocument from 'pdfkit-table';
 import { Injectable } from '@nestjs/common';
 import { PlatformEnum } from '../enum/platform.enum';
+import { FormatNumber } from './numeral';
 
 @Injectable()
 export class CreateTable {
@@ -116,9 +117,9 @@ export class CreateTable {
       ],
       rows: [
         [
-          '362-81-00644',
-          '(주)인썸니아',
-          '서울시 성동구 성수일로 19 유한타워 4층',
+          '491-87-02258',
+          '지엠포컴퍼니',
+          '서울시 강남구 테헤란로4길 15 메가시티 811호',
           '',
         ],
       ],
@@ -146,9 +147,10 @@ export class CreateTable {
     );
 
     const listRowOption = [];
-    listOption.forEach((item) => {
-      listRowOption.push([item.type, item.nameOption, `${item.price}만 원`]);
-    });
+    for (const item of listOption) {
+      const newPrice = await FormatNumber.formatMoney(item.price);
+      listRowOption.push([item.type, item.nameOption, `${newPrice}원`]);
+    }
 
     //table option
     const tableOption = {
@@ -221,19 +223,20 @@ export class CreateTable {
         ['배포 OS', 'Ubuntu 20.04'],
       ],
     };
+    const totalPriceFormat = await FormatNumber.formatMoney(totalPrice);
 
     //table price
     const tablePrice = {
       headers: [
-        {
-          label: '개발기간',
-          property: '개발기간',
-          renderer: null,
-          valign: 'center',
-          color: '#FFFFFF',
-          headerColor: '#000000',
-          align: 'center',
-        },
+        // {
+        //   label: '개발기간',
+        //   property: '개발기간',
+        //   renderer: null,
+        //   valign: 'center',
+        //   color: '#FFFFFF',
+        //   headerColor: '#000000',
+        //   align: 'center',
+        // },
         {
           label: '견적가',
           property: '견적가',
@@ -245,8 +248,10 @@ export class CreateTable {
       ],
       rows: [
         [
-          '7개월',
-          totalPrice ? `${totalPrice}(부가세 별도)` : '66,000,000(부가세 별도)',
+          // '7개월',
+          totalPrice
+            ? `${totalPriceFormat}원(부가세 별도)`
+            : '66,000,000(부가세 별도)',
         ],
       ],
     };
@@ -299,21 +304,21 @@ export class CreateTable {
       width: 535.28,
       columnsSize: [120, 295.28, 120],
     });
-    await doc.table(tablePlatform, {
-      prepareHeader: () => doc.font(boldPath).fontSize(13),
-      prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
-        return doc.font(regularPath).fontSize(10);
-        // indexColumn === 0 && doc.addBackground(rectRow, "blue", 0.15);
-      },
-      title: {
-        label: '개발 기술',
-        fontSize: 20,
-        color: 'black',
-        fontFamily: extraBoldPath,
-      },
-      width: 535.28,
-      columnsSize: [150, 385.28],
-    });
+    // await doc.table(tablePlatform, {
+    //   prepareHeader: () => doc.font(boldPath).fontSize(13),
+    //   prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+    //     return doc.font(regularPath).fontSize(10);
+    //     // indexColumn === 0 && doc.addBackground(rectRow, "blue", 0.15);
+    //   },
+    //   title: {
+    //     label: '개발 기술',
+    //     fontSize: 20,
+    //     color: 'black',
+    //     fontFamily: extraBoldPath,
+    //   },
+    //   width: 535.28,
+    //   columnsSize: [150, 385.28],
+    // });
 
     await doc.table(tablePrice, {
       prepareHeader: () => doc.font(boldPath).fontSize(13),
@@ -327,7 +332,7 @@ export class CreateTable {
         fontFamily: extraBoldPath,
       },
       width: 535.28,
-      columnsSize: [150, 385.28],
+      // columnsSize: [150, 385.28],
     });
 
     // done!

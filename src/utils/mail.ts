@@ -1,5 +1,6 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
+import { FormatNumber } from './numeral';
 
 @Injectable()
 export class MailService {
@@ -45,6 +46,7 @@ export class MailService {
     email: string,
     receiver_email: string,
   ) {
+    const newPrice = await FormatNumber.formatMoney(price);
     await this.mailerService.sendMail({
       from: email,
       to: receiver_email,
@@ -53,7 +55,7 @@ export class MailService {
       context: {
         name: email,
         url: url,
-        price: price,
+        price: `${newPrice}원`,
       },
     });
   }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { MailService } from './utils/mail';
 import * as process from 'process';
 import { CreateTable } from './utils/table';
+import { FormatNumber } from './utils/numeral';
 
 @Injectable()
 export class AppService {
@@ -35,6 +36,14 @@ export class AppService {
       ];
       await CreateTable.create(list, 550000, 'test');
       return true;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async testFormat() {
+    try {
+      return await FormatNumber.formatMoney(6000000000);
     } catch (e) {
       console.log(e);
     }
