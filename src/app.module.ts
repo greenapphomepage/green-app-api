@@ -41,17 +41,17 @@ import * as process from 'process';
     }),
     MailerModule.forRoot({
       transport: {
-        service: process.env.MAIL_SERVICE,
+        // service: process.env.MAIL_SERVICE,
         host: process.env.MAIL_HOST,
         port: +process.env.MAIL_PORT,
         secure: true,
-        ignoreTLS: true,
-        tls: {
-          minDHSize: 512,
-          minVersion: 'TLSv1',
-          maxVersion: 'TLSv1.3',
-          ciphers: 'ALL',
-        },
+        // ignoreTLS: true,
+        // tls: {
+        //   minDHSize: 512,
+        //   minVersion: 'TLSv1',
+        //   maxVersion: 'TLSv1.3',
+        //   ciphers: 'ALL',
+        // },
         auth: {
           user: process.env.MAIL_USERNAME,
           pass: process.env.MAIL_PASSWORD,
