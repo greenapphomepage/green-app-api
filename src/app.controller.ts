@@ -9,4 +9,8 @@ export class AppController {
   getHello() {
     return this.appService.testSendMail();
   }
+  @Post('table')
+  getTable() {
+    return this.appService.testTable();
+  }
 }

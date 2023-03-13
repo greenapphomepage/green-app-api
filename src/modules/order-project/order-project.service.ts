@@ -9,6 +9,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { MailService } from '../../utils/mail';
 import * as process from 'process';
+import { CreateTable } from '../../utils/table';
 
 @Injectable()
 export class OrderProjectService {
@@ -68,8 +69,13 @@ export class OrderProjectService {
         await this.orderRepo.save(getOrder);
         getOrder.planFile = JSON.parse(getOrder.planFile);
         getOrder.options = JSON.parse(getOrder.options);
+        await CreateTable.create(
+          options,
+          getOrder.estimatedCost,
+          `table${getOrder.orderId}`,
+        );
         await this.mailer.sendNotifyMailToCustomer(
-          'https://insomenia.com/contracts/cc96ebbf155819cf5fcc1e967c6fe1a2/preview.pdf',
+          `${process.env.SERVER_HOST}/table/table${getOrder.orderId}.pdf`,
           getOrder.estimatedCost,
           process.env.MAIL_USERNAME,
           getOrder.email,
