@@ -21,54 +21,54 @@ declare const module: any;
 async function bootstrap() {
   const logger = new Logger();
   const app = await NestFactory.create(AppModule, { cors: true });
-  app.use((req, res, next) => {
-    const err = null;
-    try {
-      if (Object.keys(req.query).length > 0) {
-        if (req.query['page']) {
-          if (
-            +req.query['page'] > 1000000 ||
-            !req.query['page'].match(config.REGEX_NUBMER.value)
-          )
-            throw code.VALIDATION_ERROR.type;
-        }
-        if (req.query['perPage']) {
-          if (
-            +req.query['perPage'] > 100000 ||
-            !req.query['perPage'].match(config.REGEX_NUBMER.value)
-          )
-            throw code.VALIDATION_ERROR.type;
-        }
-        if (req.query['sort']) {
-          if (req.query['sort'])
-            req.query['sort'] = req.query['sort'].toUpperCase();
-        }
-        if (!req.query['language']) {
-          req.query['language'] = config.LOCALES.value.filter(
-            (item) => item == 'vi',
-          )[0];
-        }
-      }
-    } catch (e) {
-      console.log(e);
-      throw new HttpException(SendResponse.error(e), HttpStatus.FORBIDDEN);
-    }
-    next();
-  });
+  // app.use((req, res, next) => {
+  //   const err = null;
+  //   try {
+  //     if (Object.keys(req.query).length > 0) {
+  //       if (req.query['page']) {
+  //         if (
+  //           +req.query['page'] > 1000000 ||
+  //           !req.query['page'].match(config.REGEX_NUBMER.value)
+  //         )
+  //           throw code.VALIDATION_ERROR.type;
+  //       }
+  //       if (req.query['perPage']) {
+  //         if (
+  //           +req.query['perPage'] > 100000 ||
+  //           !req.query['perPage'].match(config.REGEX_NUBMER.value)
+  //         )
+  //           throw code.VALIDATION_ERROR.type;
+  //       }
+  //       if (req.query['sort']) {
+  //         if (req.query['sort'])
+  //           req.query['sort'] = req.query['sort'].toUpperCase();
+  //       }
+  //       if (!req.query['language']) {
+  //         req.query['language'] = config.LOCALES.value.filter(
+  //           (item) => item == 'vi',
+  //         )[0];
+  //       }
+  //     }
+  //   } catch (e) {
+  //     console.log(e);
+  //     throw new HttpException(SendResponse.error(e), HttpStatus.FORBIDDEN);
+  //   }
+  //   next();
+  // });
 
-  app.use(async (req, res, next) => {
-    const err = null;
-    try {
-      const { ip, method, originalUrl } = req;
+  // app.use(async (req, res, next) => {
+  //   const err = null;
+  //   try {
+  //     const { ip, method, originalUrl } = req;
 
-      if (originalUrl.includes('/excel/')) {
-        throw 'BLOCKING';
-      }
-    } catch (e) {
-      return next(new NotFoundException(SendResponse.error(e)));
-    }
-    next();
-  });
+  //     if (originalUrl.includes('/excel/')) {
+  //       throw 'BLOCKING';
+  //     }
+  //   } catch (e) {
+  //     return next(new NotFoundException(SendResponse.error(e)));
+  //   }
+  //   next();
+  // });
   if (process.env.NODE_ENV !== 'production') {
     const config_bearer = new DocumentBuilder()
       .addBearerAuth()

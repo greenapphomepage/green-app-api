@@ -10,7 +10,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 export class FileManagerService {
   constructor() {}
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  // @Cron(CronExpression.EVERY_MINUTE)
   async removePictureByTime() {
     try {
       const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

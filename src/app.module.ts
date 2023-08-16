@@ -90,7 +90,7 @@ import * as process from 'process';
   providers: [AppService, FileManagerService, LoggerService, MailService],
 })
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*');
-  }
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer.apply(LoggerMiddleware).forRoutes('*');
+  // }
 }
