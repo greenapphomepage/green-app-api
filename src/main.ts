@@ -16,7 +16,6 @@ import {
 import { SendResponse } from './utils/send-response';
 import config from './config/config';
 import code from './config/code';
-declare const module: any;
 
 async function bootstrap() {
   const logger = new Logger();
@@ -114,9 +113,5 @@ async function bootstrap() {
       'Bootstrap',
     );
   });
-  if (module.hot) {
-    module.hot.accept();
-    module.hot.dispose(() => app.close());
-  }
 }
 bootstrap();

@@ -11,7 +11,6 @@ import { AuthModule } from './modules/auth/auth.module';
 import { DatabaseModule } from './database.module';
 import { RoleModule } from './modules/role/role.module';
 import { PermissionModule } from './modules/permission/permission.module';
-import { TwofaModule } from './modules/twofa/twofa.module';
 import { SystemModule } from './modules/system/system.module';
 import { PortfolioModule } from './modules/portfolio/portfolio.module';
 import { OrderProjectModule } from './modules/order-project/order-project.module';
