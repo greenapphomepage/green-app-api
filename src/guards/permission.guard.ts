@@ -24,11 +24,13 @@ export class PermissionsGuard implements CanActivate {
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
 
     const request = context.switchToHttp().getRequest();
+    const { headers, socket } = request;
+    const ip = headers['x-forwarded-for'] || socket.remoteAddress;
     const userAgent = UAParser(request.headers['user-agent']);
 
     const user = await UserService.StaticFindUserById(
       request.user.user_id,
-      request.ip,
+      ip,
       userAgent.os.name,
       userAgent.browser.name,
       userAgent.ua.slice(0, 7),
