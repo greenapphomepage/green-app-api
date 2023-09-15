@@ -79,6 +79,9 @@ export class AuthController {
       if (Array.isArray(ip)) {
         ip = ip[0];
       }
+      if (ip.includes(',')) {
+        ip = ip.split(',')[1];
+      }
       const userAgent = UAParser(headers['user-agent']);
       const refreshTokenPayload: Pick<
         RefreshToken,
@@ -107,6 +110,9 @@ export class AuthController {
       let ip = headers['x-forwarded-for'] || socket.remoteAddress;
       if (Array.isArray(ip)) {
         ip = ip[0];
+      }
+      if (ip.includes(',')) {
+        ip = ip.split(',')[1];
       }
       const userAgent = UAParser(headers['user-agent']);
       const refreshTokenPayload: Pick<
@@ -143,6 +149,9 @@ export class AuthController {
       let ip = headers['x-forwarded-for'] || socket.remoteAddress;
       if (Array.isArray(ip)) {
         ip = ip[0];
+      }
+      if (ip.includes(',')) {
+        ip = ip.split(',')[1];
       }
       const userAgent = UAParser(headers['user-agent']);
       const refreshTokenPayload: Pick<

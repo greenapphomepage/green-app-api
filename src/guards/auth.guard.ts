@@ -11,6 +11,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (Array.isArray(ip)) {
       ip = ip[0];
     }
+    if (ip.includes(',')) {
+      ip = ip.split(',')[1];
+    }
     if (!user || user.refreshToken.length === 0) {
       throw new UnauthorizedException(SendResponse.error('UNAUTHORIZED'));
     }
