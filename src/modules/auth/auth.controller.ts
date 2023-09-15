@@ -75,13 +75,16 @@ export class AuthController {
   ) {
     try {
       const { headers, socket } = req;
-      const ip = headers['x-forwarded-for'] || socket.remoteAddress;
+      let ip = headers['x-forwarded-for'] || socket.remoteAddress;
+      if (Array.isArray(ip)) {
+        ip = ip[0];
+      }
       const userAgent = UAParser(headers['user-agent']);
       const refreshTokenPayload: Pick<
         RefreshToken,
         'userAgent' | 'ip' | 'os' | 'browser'
       > = {
-        ip: ip.toString(),
+        ip,
         userAgent: userAgent.ua,
         browser: userAgent.browser.name,
         os: userAgent.os.name,
@@ -101,13 +104,16 @@ export class AuthController {
   async logout(@GetCurrentUserId() userId: number, @Req() req: Request) {
     try {
       const { headers, socket } = req;
-      const ip = headers['x-forwarded-for'] || socket.remoteAddress;
+      let ip = headers['x-forwarded-for'] || socket.remoteAddress;
+      if (Array.isArray(ip)) {
+        ip = ip[0];
+      }
       const userAgent = UAParser(headers['user-agent']);
       const refreshTokenPayload: Pick<
         RefreshToken,
         'userAgent' | 'ip' | 'os' | 'browser'
       > = {
-        ip: ip.toString(),
+        ip,
         userAgent: userAgent.ua,
         browser: userAgent.browser.name,
         os: userAgent.os.name,
@@ -134,13 +140,16 @@ export class AuthController {
   ) {
     try {
       const { headers, socket } = req;
-      const ip = headers['x-forwarded-for'] || socket.remoteAddress;
+      let ip = headers['x-forwarded-for'] || socket.remoteAddress;
+      if (Array.isArray(ip)) {
+        ip = ip[0];
+      }
       const userAgent = UAParser(headers['user-agent']);
       const refreshTokenPayload: Pick<
         RefreshToken,
         'userAgent' | 'ip' | 'os' | 'browser'
       > = {
-        ip: ip.toString(),
+        ip: ip,
         userAgent: userAgent.ua,
         browser: userAgent.browser.name,
         os: userAgent.os.name,

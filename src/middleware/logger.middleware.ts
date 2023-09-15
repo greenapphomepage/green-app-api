@@ -8,7 +8,10 @@ export class LoggerMiddleware implements NestMiddleware {
 
   use(req: Request, res: Response, next: any) {
     const { headers, method, baseUrl, query, body, socket } = req;
-    const ip = headers['x-forwarded-for'] || socket.remoteAddress;
+    let ip = headers['x-forwarded-for'] || socket.remoteAddress;
+    if (Array.isArray(ip)) {
+      ip = ip[0];
+    }
     this.myLogger.log(
       {
         time: new Date().toLocaleString('en-US', {

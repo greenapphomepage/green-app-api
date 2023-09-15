@@ -7,7 +7,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   handleRequest(err: any, user: any, info: any, context: any, status: any) {
     const request = context.switchToHttp().getRequest();
     const { headers, socket } = request;
-    const ip = headers['x-forwarded-for'] || socket.remoteAddress;
+    let ip = headers['x-forwarded-for'] || socket.remoteAddress;
+    if (Array.isArray(ip)) {
+      ip = ip[0];
+    }
     if (!user || user.refreshToken.length === 0) {
       throw new UnauthorizedException(SendResponse.error('UNAUTHORIZED'));
     }
