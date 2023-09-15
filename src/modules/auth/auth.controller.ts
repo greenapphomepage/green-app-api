@@ -80,7 +80,7 @@ export class AuthController {
         ip = ip[0];
       }
       if (ip.includes(',')) {
-        ip = ip.split(',')[1];
+        ip = ip.split(',')[0];
       }
       const userAgent = UAParser(headers['user-agent']);
       const refreshTokenPayload: Pick<
@@ -112,7 +112,7 @@ export class AuthController {
         ip = ip[0];
       }
       if (ip.includes(',')) {
-        ip = ip.split(',')[1];
+        ip = ip.split(',')[0];
       }
       const userAgent = UAParser(headers['user-agent']);
       const refreshTokenPayload: Pick<
@@ -151,7 +151,7 @@ export class AuthController {
         ip = ip[0];
       }
       if (ip.includes(',')) {
-        ip = ip.split(',')[1];
+        ip = ip.split(',')[0];
       }
       const userAgent = UAParser(headers['user-agent']);
       const refreshTokenPayload: Pick<

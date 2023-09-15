@@ -12,7 +12,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       ip = ip[0];
     }
     if (ip.includes(',')) {
-      ip = ip.split(',')[1];
+      ip = ip.split(',')[0];
     }
     if (!user || user.refreshToken.length === 0) {
       throw new UnauthorizedException(SendResponse.error('UNAUTHORIZED'));
