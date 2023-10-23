@@ -43,7 +43,7 @@ import * as process from 'process';
         // service: process.env.MAIL_SERVICE,
         host: process.env.MAIL_HOST,
         port: +process.env.MAIL_PORT,
-        secure: true,
+        secure: false,
         // ignoreTLS: true,
         // tls: {
         //   minDHSize: 512,
@@ -51,13 +51,15 @@ import * as process from 'process';
         //   maxVersion: 'TLSv1.3',
         //   ciphers: 'ALL',
         // },
+        // debug: true, // show debug output
+        // logger: true,
         auth: {
           user: process.env.MAIL_USERNAME,
           pass: process.env.MAIL_PASSWORD,
         },
       },
       defaults: {
-        from: '"No Reply" <greenappsblog@naver.com> ',
+        from: '"No Reply" <gm4-korea@greenapps.kr> ',
       },
       template: {
         dir: join(__dirname, 'mail', 'templates'),
