@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
+import {orderBy} from 'lodash';
 
 @Injectable()
 export class AboutService {
@@ -14,6 +15,6 @@ export class AboutService {
         list.push(`about/${file}`);
 
     }
-    return list;
+    return orderBy(list,[function (o : string) { return Number(o.split('/')[1].split('.')[0]) }],['asc']);
   }
 }
