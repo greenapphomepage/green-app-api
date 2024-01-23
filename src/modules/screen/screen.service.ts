@@ -6,7 +6,7 @@ import code from '../../config/code';
 import { FileManagerService } from '../../utils/file-manager';
 import { CreateScreenDto } from './dto/create-screen.dto';
 import { UpdateScreenDto } from './dto/update-screen.dto';
-import { FilterListScreenDto } from './dto/filter-list-screen.dto';
+import {FilterListScreenDto, FilterListScreenV2Dto} from './dto/filter-list-screen.dto';
 import { Tags } from '../../entities/tags';
 
 @Injectable()
@@ -225,6 +225,26 @@ export class ScreenService {
       }
       await this.screenRepo.save(checkOption);
       return { msg: 'Done' };
+    } catch (e) {
+      console.log({ e });
+      throw e;
+    }
+  }
+
+  async list(query: FilterListScreenV2Dto) {
+    try {
+      const { type, tag ,sort } = query;
+      const list = await this.screenRepo.find({
+        order: { index: sort as SORT },
+        where: {
+          ...(tag ? { tag } : {}),
+          ...(type ? { type } : {}),
+        },
+      });
+      list.forEach((item) => {
+        delete item.index;
+      });
+      return list
     } catch (e) {
       console.log({ e });
       throw e;

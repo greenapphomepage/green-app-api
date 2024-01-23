@@ -1,6 +1,6 @@
 import { QueryListDto } from '../../../global/dto/query-list.dto';
 import { Expose } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
+import {ApiProperty, PickType} from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
 import { TypeScreenEnum } from '../../screen/enum/type-screen.enum';
 
@@ -16,4 +16,8 @@ export class FilterListTagDto extends QueryListDto {
   @IsString()
   @MaxLength(255)
   type: string;
+}
+
+export class filterListTagV2Dto extends PickType(FilterListTagDto,['type','keyword','sort']){
+
 }

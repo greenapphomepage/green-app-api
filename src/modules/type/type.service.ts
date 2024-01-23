@@ -201,4 +201,7 @@ export class TypeService {
       throw e;
     }
   }
+  async list(){
+    return this.typeRepo.find({order : {index : 'DESC'}})
+  }
 }

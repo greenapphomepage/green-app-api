@@ -28,6 +28,7 @@ import { LoggerService } from './modules/logger/logger.service';
 import { TypeModule } from './modules/type/type.module';
 import { MailService } from './utils/mail';
 import * as process from 'process';
+import {AboutModule} from "./modules/about/about.module";
 
 @Module({
   imports: [
@@ -79,13 +80,14 @@ import * as process from 'process';
     PortfolioModule,
     OrderProjectModule,
     // FeatureModule,
-    // PreviewModule,
+    // AboutModule,
     SeedModule,
     ScreenModule,
     EstimateModule,
     TagModule,
     LoggerModule,
     TypeModule,
+    AboutModule
   ],
   controllers: [AppController],
   providers: [AppService, FileManagerService, LoggerService, MailService],

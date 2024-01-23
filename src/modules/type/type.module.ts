@@ -9,10 +9,11 @@ import { TagService } from '../tag/tag.service';
 import { OrderProjectService } from '../order-project/order-project.service';
 import { OrderProject } from '../../entities/order-project';
 import { MailService } from '../../utils/mail';
+import {TypeV2Controller} from "./v2/type.controller";
 
 @Module({
   imports: [TypeOrmModule.forFeature([Types, Tags, Screens, OrderProject])],
   providers: [TypeService, TagService, OrderProjectService, MailService],
-  controllers: [TypeController],
+  controllers: [TypeController,TypeV2Controller],
 })
 export class TypeModule {}

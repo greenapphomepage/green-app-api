@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import code from '../../config/code';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
-import { FilterListTagDto } from './dto/filter-tag.dto';
+import {FilterListTagDto, filterListTagV2Dto} from './dto/filter-tag.dto';
 import { Screens } from '../../entities/screen';
 import { Types } from '../../entities/type';
 
@@ -209,5 +209,17 @@ export class TagService {
       console.log({ e });
       throw e;
     }
+  }
+  async list(query: filterListTagV2Dto){
+    const {type,keyword,sort} = query
+    return this.tagRepo.find({
+      where: {
+        ...(type ? { type } : {}),
+        ...(keyword ? { name: Like(`%${keyword}%`) } : {}),
+      },
+      order : {
+        index : sort ? sort as SORT : 'DESC'
+      }
+    })
   }
 }

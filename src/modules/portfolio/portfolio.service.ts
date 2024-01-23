@@ -7,6 +7,7 @@ import { QueryListDto } from '../../global/dto/query-list.dto';
 import { CreatePortfoliosDto } from './dto/create-portfolio.dto';
 import { UpdatePortfoliosDto } from './dto/update-portfolio.dto';
 import { FileManagerService } from '../../utils/file-manager';
+import {filterListTagV2Dto} from "../tag/dto/filter-tag.dto";
 
 @Injectable()
 export class PortfolioService {
@@ -241,5 +242,12 @@ export class PortfolioService {
       throw e;
       console.log(e);
     }
+  }
+  async list(){
+    const list = await this.portfolioRepo.find()
+    list.forEach((item) => {
+      item.images = JSON.parse(item.images);
+    });
+    return list
   }
 }
