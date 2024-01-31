@@ -15,6 +15,7 @@ export class FileManagerService {
     try {
       const manage_folder = `public/${config.TMP_FOLDER.value}`;
       fs.readdirSync(manage_folder).forEach((file) => {
+        if (file){
         try {
           const stats = fs.statSync(join(manage_folder, file));
           const get_now = new Date();
@@ -27,6 +28,7 @@ export class FileManagerService {
           }
         } catch (e) {
           console.log(e);
+        }
         }
       });
     } catch (e) {

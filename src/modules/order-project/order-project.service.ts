@@ -75,12 +75,16 @@ export class OrderProjectService {
           `table${getOrder.orderId}`,
           getOrder.platform,
         );
-        await this.mailer.sendNotifyMailToCustomer(
-          `${process.env.SERVER_HOST}/table/table${getOrder.orderId}.pdf`,
-          getOrder.estimatedCost,
-          process.env.MAIL_USERNAME,
-          getOrder.email,
-        );
+       try {
+         await this.mailer.sendNotifyMailToCustomer(
+             `${process.env.SERVER_HOST}/table/table${getOrder.orderId}.pdf`,
+             getOrder.estimatedCost,
+             process.env.MAIL_USERNAME,
+             getOrder.email,
+         );
+       }
+       catch (e) {
+       }
         return getOrder;
       }
       return null;

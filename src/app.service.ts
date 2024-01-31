@@ -16,7 +16,7 @@ export class AppService {
         'test',
         1000,
         process.env.MAIL_USERNAME,
-        'congthangmyth1802@gmail.com',
+        'congthangmyth@gmail.com',
       );
       return true;
     } catch (e) {
