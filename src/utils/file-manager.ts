@@ -10,36 +10,25 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 export class FileManagerService {
   constructor() {}
 
-  // @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async removePictureByTime() {
     try {
-      const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
       const manage_folder = `public/${config.TMP_FOLDER.value}`;
-      let counter = 0;
-      while (true) {
-        if (counter == config.TMP_RELOAD_CHECKER.value) {
-          counter = 0;
-          fs.readdirSync(manage_folder).forEach((file) => {
-            try {
-              const stats = fs.statSync(join(manage_folder, file));
-              const get_now = new Date();
-              const diffTime = Math.abs(
-                (get_now.getTime() - stats.birthtime.getTime()) / 1000,
-              );
-              if (diffTime > config.TMP_FILE_MAX.value) {
-                console.log('remove ' + join(manage_folder, file));
-                fs.unlinkSync(join(manage_folder, file));
-              }
-            } catch (e) {
-              console.log(e);
-            }
-          });
-        } else {
-          counter++;
+      fs.readdirSync(manage_folder).forEach((file) => {
+        try {
+          const stats = fs.statSync(join(manage_folder, file));
+          const get_now = new Date();
+          const diffTime = Math.abs(
+              (get_now.getTime() - stats.birthtime.getTime()) / 1000,
+          );
+          if (diffTime > config.TMP_FILE_MAX.value) {
+            console.log('remove ' + join(manage_folder, file));
+            fs.unlinkSync(join(manage_folder, file));
+          }
+        } catch (e) {
+          console.log(e);
         }
-        await delay(1000);
-      }
+      });
     } catch (e) {
       console.log(e);
     }
