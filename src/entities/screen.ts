@@ -24,6 +24,9 @@ export class Screens {
   @Column({ type: 'varchar', length: 255 })
   public nameOption: string;
 
+  @Column({ type: 'text', nullable: true })
+  public description: string;
+
   @Column({ type: 'varchar', length: 255, nullable: true })
   public image: string;
 

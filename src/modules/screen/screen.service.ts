@@ -27,7 +27,7 @@ export class ScreenService {
       } else {
         index = list[0].index - 1;
       }
-      const { nameOption, tag, type, image, schedule, price } = body;
+      const { nameOption, tag, type, image, schedule, price ,description } = body;
       const findTag = await this.tagRepo.find({ where: { name: tag } });
       if (!findTag.length) {
         throw code.TAG_NOT_FOUND.type;
@@ -43,6 +43,7 @@ export class ScreenService {
         price,
         schedule,
         index,
+        description
       });
       const temp = await this.screenRepo.save(newOption);
 
@@ -66,7 +67,7 @@ export class ScreenService {
   }
   async updateOption(body: UpdateScreenDto) {
     try {
-      const { id, nameOption, schedule, tag, price, type, image } = body;
+      const { id, nameOption, schedule, tag, price, type, image,description } = body;
       const checkOption = await this.screenRepo.findOne({
         where: { id },
       });
@@ -93,6 +94,7 @@ export class ScreenService {
         checkOption.tag = tag;
       }
       checkOption.schedule = schedule ? schedule : checkOption.schedule;
+      checkOption.description = description ? description : checkOption.description;
       checkOption.price = price ? price : checkOption.price;
 
       await this.screenRepo.save(checkOption);

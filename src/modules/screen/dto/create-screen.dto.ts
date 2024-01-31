@@ -63,4 +63,10 @@ export class CreateScreenDto {
   @IsOptional()
   @IsInt()
   schedule: number;
+
+  @ApiProperty({ type: 'string' })
+  @Expose()
+  @IsOptional()
+  @IsString()
+  description: string;
 }
