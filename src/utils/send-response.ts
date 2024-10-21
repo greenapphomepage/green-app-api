@@ -23,6 +23,9 @@ export class SendResponse {
     }
     if (typeof error === 'object') {
       let msg = null;
+      if (error['message']) {
+        msg = error['message'];
+      }
       for (const e in code) {
         if (code[e].code === error['code']) {
           msg = e;

@@ -28,7 +28,8 @@ import { LoggerService } from './modules/logger/logger.service';
 import { TypeModule } from './modules/type/type.module';
 import { MailService } from './utils/mail';
 import * as process from 'process';
-import {AboutModule} from "./modules/about/about.module";
+import { AboutModule } from './modules/about/about.module';
+import { BlogModule } from './modules/blog/blog.module';
 
 @Module({
   imports: [
@@ -87,7 +88,8 @@ import {AboutModule} from "./modules/about/about.module";
     TagModule,
     LoggerModule,
     TypeModule,
-    AboutModule
+    AboutModule,
+    BlogModule,
   ],
   controllers: [AppController],
   providers: [AppService, FileManagerService, LoggerService, MailService],
