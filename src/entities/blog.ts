@@ -47,4 +47,7 @@ export class Blogs {
   convert() {
     this.id = Number(this.id);
   }
+  get thumbnail_url() {
+    return `${process.env.IMAGE_URL}/${this.thumbnail}`;
+  }
 }

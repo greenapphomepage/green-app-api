@@ -22,16 +22,16 @@ import {
   MultiFileUploadDto,
   UploadDto,
 } from './upload-file.dto';
-import {AwsS3Service} from "../s3/aws.s3.service";
-import {UtilsProvider} from "../../utils/provider";
+import { AwsS3Service } from '../s3/aws.s3.service';
+import { UtilsProvider } from '../../utils/provider';
 
 @ApiTags('Systems| Config')
 @Controller('system')
 export class SystemController {
   constructor(
-      private readonly systemsService: SystemService,
-      private readonly awsS3Service: AwsS3Service,
-      ) {}
+    private readonly systemsService: SystemService,
+    private readonly awsS3Service: AwsS3Service,
+  ) {}
 
   @Post('upload-image')
   @HttpCode(200)
@@ -172,6 +172,7 @@ export class SystemController {
       return SendResponse.error(e);
     }
   }
+
   @Post('upload-s3')
   @HttpCode(200)
   @ApiConsumes('multipart/form-data')
@@ -181,28 +182,33 @@ export class SystemController {
   })
   @UseInterceptors(FileInterceptor('picture', multerOptions))
   async UploadS3(@UploadedFile() picture: Express.Multer.File) {
-      if (picture.size > +config.MAX_FILE_SIZE.value) {
-        throw 'PICTURE_ERROR';
-      }
+    if (picture.size > +config.MAX_FILE_SIZE.value) {
+      throw 'PICTURE_ERROR';
+    }
 
-      if (!picture) {
-        throw 'PICTURE_ERROR';
-      }
+    if (!picture) {
+      throw 'PICTURE_ERROR';
+    }
     try {
       const filename: string = picture.originalname;
       const mime: string = filename
-          .substring(filename.lastIndexOf('.') + 1, filename.length)
-          .toUpperCase();
+        .substring(filename.lastIndexOf('.') + 1, filename.length)
+        .toUpperCase();
       const name = UtilsProvider.randomString(
-          config.RANDOM_STRING_LENGTH.value,
+        config.RANDOM_STRING_LENGTH.value,
       );
-      const _save = await this.awsS3Service.putItemInBucket(`${name}.${mime}`,picture.mimetype,picture.buffer)
+      const _save = await this.awsS3Service.putItemInBucket(
+        `${name}.${mime}`,
+        picture.mimetype,
+        picture.buffer,
+      );
       return SendResponse.success(_save);
     } catch (e) {
       console.log(e);
       return SendResponse.error(e);
     }
   }
+
   @Post('upload-file-s3')
   @HttpCode(200)
   @ApiConsumes('multipart/form-data')
@@ -213,24 +219,73 @@ export class SystemController {
   // @ApiImplicitFormData({ name: 'picture', required: false, type: 'file' })
   @UseInterceptors(FileInterceptor('file', multerFileOptions))
   async UploadFileS3(@UploadedFile() file: Express.Multer.File) {
-      if (file.size > +config.MAX_FILE_SIZE.value) {
-        throw 'FILE_ERROR';
-      }
+    if (file.size > +config.MAX_FILE_SIZE.value) {
+      throw 'FILE_ERROR';
+    }
 
-      if (!file) {
-        throw 'FILE_ERROR';
-      }
+    if (!file) {
+      throw 'FILE_ERROR';
+    }
     try {
-
       const filename: string = file.originalname;
       const mime: string = filename
-          .substring(filename.lastIndexOf('.') + 1, filename.length)
-          .toUpperCase();
+        .substring(filename.lastIndexOf('.') + 1, filename.length)
+        .toUpperCase();
       const name = UtilsProvider.randomString(
-          config.RANDOM_STRING_LENGTH.value,
+        config.RANDOM_STRING_LENGTH.value,
       );
-      const _save = await this.awsS3Service.putItemInBucket(`${name}.${mime}`,file.mimetype,file.buffer)
+      const _save = await this.awsS3Service.putItemInBucket(
+        `${name}.${mime}`,
+        file.mimetype,
+        file.buffer,
+      );
       return SendResponse.success(_save);
+    } catch (e) {
+      console.log(e);
+      return SendResponse.error(e);
+    }
+  }
+
+  //upload multiple file to s3
+  @Post('multiple-s3')
+  @HttpCode(200)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'images',
+    type: MultiFileUploadDto,
+  })
+  @UseInterceptors(FilesInterceptor('pictures', 6, multerOptions))
+  async uploadMultipleS3(
+    @UploadedFiles() pictures: Array<Express.Multer.File>,
+  ) {
+    try {
+      const listImage = [];
+      if (pictures) {
+        for (const picture of pictures) {
+          if (picture.size > +config.MAX_FILE_SIZE.value) {
+            throw 'PICTURE_ERROR';
+          }
+
+          if (!picture) {
+            throw 'PICTURE_ERROR';
+          }
+
+          const filename: string = picture.originalname;
+          const mime: string = filename
+            .substring(filename.lastIndexOf('.') + 1, filename.length)
+            .toUpperCase();
+          const name = UtilsProvider.randomString(
+            config.RANDOM_STRING_LENGTH.value,
+          );
+          const _save = await this.awsS3Service.putItemInBucket(
+            `${name}.${mime}`,
+            picture.mimetype,
+            picture.buffer,
+          );
+          listImage.push(_save);
+        }
+      }
+      return SendResponse.success(listImage);
     } catch (e) {
       console.log(e);
       return SendResponse.error(e);
