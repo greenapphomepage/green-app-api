@@ -17,6 +17,7 @@ import { DeletePortfolioDto } from '../portfolio/dto/delete-portfolio.dto';
 import { QueryListDto } from '../../global/dto/query-list.dto';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
+import { UpDownDto } from './dto/upDown.dto';
 
 @ApiTags('Blog')
 @Controller('blog')
@@ -58,7 +59,7 @@ export class BlogController {
     try {
       query.perPage = !query.perPage ? 10 : query.perPage;
       query.page = !query.page ? 1 : query.page;
-      query.sort ? query.sort.toUpperCase() : 'DESC';
+      query.sort ? query.sort.toUpperCase() : 'ASC';
       const result = await this.blogService.listBlog(query);
       const pagi = (result.count / query.perPage) | 0;
       const pages = result.count % query.perPage == 0 ? pagi : pagi + 1;
@@ -111,6 +112,22 @@ export class BlogController {
       } else {
         order = await this.blogService.deleteAll();
       }
+      return SendResponse.success(order);
+    } catch (e) {
+      return SendResponse.error(e);
+    }
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Up or down item' })
+  @Auth({ roles: ['SUPER_ADMIN'] })
+  @Put('order/:id')
+  async orderBlog(
+    @Param('id', CustomIntPipe) id: number,
+    @Body() { type }: UpDownDto,
+  ) {
+    try {
+      const order = await this.blogService.upOrDown(id, type);
       return SendResponse.success(order);
     } catch (e) {
       return SendResponse.error(e);

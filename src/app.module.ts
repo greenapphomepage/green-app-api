@@ -30,6 +30,7 @@ import { MailService } from './utils/mail';
 import * as process from 'process';
 import { AboutModule } from './modules/about/about.module';
 import { BlogModule } from './modules/blog/blog.module';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -90,6 +91,7 @@ import { BlogModule } from './modules/blog/blog.module';
     TypeModule,
     AboutModule,
     BlogModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService, FileManagerService, LoggerService, MailService],

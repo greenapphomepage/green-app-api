@@ -1,5 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { FindOptionsWhere, Like, Repository } from 'typeorm';
+import {
+  FindOptionsWhere,
+  LessThan,
+  Like,
+  MoreThan,
+  Repository,
+} from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import code from '../../config/code';
 import { CreateBlogDto } from './dto/create-blog.dto';
@@ -10,18 +16,25 @@ import { HashTags } from '../../entities/hashtag';
 import { extend } from 'lodash';
 import * as uuid from 'uuid';
 import { generateSlug } from '../../utils/slug';
+import { OrderType } from './enum/orderType';
+import { Category } from '../../entities/category';
 
 @Injectable()
 export class BlogService {
   constructor(
     @InjectRepository(Blogs)
     private readonly blogRepo: Repository<Blogs>,
+    @InjectRepository(Category)
+    private readonly categoryRepo: Repository<Category>,
     @InjectRepository(HashTags)
     private readonly hashTagRepo: Repository<HashTags>,
   ) {}
   async createBlog(body: CreateBlogDto) {
     try {
       const { hashTags } = body;
+      const category = await this.categoryRepo.findOneOrFail({
+        where: { id: body.categoryId },
+      });
       //find or create list hashTags
       const listHashTags = [];
       for (const tag of hashTags) {
@@ -47,6 +60,8 @@ export class BlogService {
         ...body,
         hashTags: listHashTags,
         slug,
+        category,
+        order: new Date().getTime(),
       });
       return this.blogRepo.save(blog);
     } catch (e) {
@@ -81,7 +96,7 @@ export class BlogService {
       const [list, count] = await this.blogRepo.findAndCount({
         skip: (page - 1) * perPage,
         take: perPage,
-        order: { created_at: sort as SORT },
+        order: { order: sort as SORT },
         where: keyword
           ? [
               {
@@ -133,7 +148,6 @@ export class BlogService {
       throw e;
     }
   }
-
   async deleteAll() {
     try {
       await this.blogRepo.clear();
@@ -143,7 +157,6 @@ export class BlogService {
       console.log(e);
     }
   }
-
   async deleteSelected(ids: number[]) {
     try {
       const listSelected: Blogs[] = [];
@@ -155,6 +168,41 @@ export class BlogService {
       }
       await this.blogRepo.remove(listSelected);
       return { msg: 'Done' };
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+  async upOrDown(id: number, type: OrderType) {
+    try {
+      const checkBlog = await this.blogRepo.findOneOrFail({
+        where: { id },
+      });
+      const { order } = checkBlog;
+      //if type is up , swap order with previous . if type is down , swap order with next
+      if (type === OrderType.UP) {
+        const previous = await this.blogRepo.findOne({
+          where: { order: LessThan(order) },
+          order: { order: 'DESC' },
+        });
+        if (previous) {
+          checkBlog.order = previous.order;
+          previous.order = order;
+          await this.blogRepo.save(previous);
+        }
+      } else {
+        const next = await this.blogRepo.findOne({
+          where: { order: MoreThan(order) },
+          order: { order: 'ASC' },
+        });
+        if (next) {
+          checkBlog.order = next.order;
+          next.order = order;
+          await this.blogRepo.save(next);
+        }
+      }
+
+      return this.blogRepo.save(checkBlog);
     } catch (e) {
       console.log(e);
       throw e;

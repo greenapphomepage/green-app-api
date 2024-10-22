@@ -12,6 +12,7 @@ import {
   Index,
 } from 'typeorm';
 import { HashTags } from './hashtag';
+import { Category } from './category';
 
 @Entity('blogs')
 export class Blogs {
@@ -31,8 +32,23 @@ export class Blogs {
   @Column({ type: 'text' })
   public content: string;
 
+  @Column({ type: 'text', nullable: true })
+  public description: string;
+
+  @Column({ type: 'text', nullable: true })
+  public keywords: string;
+
+  @Column({ type: 'bigint', default: 0 })
+  public order: number;
+
   @ManyToMany(() => HashTags, (hashTags) => hashTags.blogs)
   public hashTags: HashTags[];
+
+  @ManyToOne(() => Category, (category) => category.blog, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'categoryId' })
+  public category: Category;
 
   @CreateDateColumn({ name: 'created_at' })
   public created_at: Date;
@@ -43,11 +59,12 @@ export class Blogs {
   @DeleteDateColumn({ name: 'deleted_at' })
   public deleted_at: Date;
 
+  get thumbnail_url() {
+    return `${process.env.IMAGE_URL}/${this.thumbnail}`;
+  }
+
   @AfterLoad()
   convert() {
     this.id = Number(this.id);
-  }
-  get thumbnail_url() {
-    return `${process.env.IMAGE_URL}/${this.thumbnail}`;
   }
 }

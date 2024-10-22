@@ -42,6 +42,24 @@ export class CreateBlogDto {
   public content: string;
 
   @ApiProperty({
+    type: 'string',
+    example: 'description',
+  })
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(255)
+  public description: string;
+
+  @ApiProperty({
+    type: 'string',
+    example: 'keywords',
+  })
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(255)
+  public keywords: string;
+
+  @ApiProperty({
     type: 'array',
     example: ['hashTags'],
     required: false,
@@ -50,4 +68,12 @@ export class CreateBlogDto {
   @IsArray()
   @IsString({ each: true })
   public hashTags: string[];
+
+  @ApiProperty({
+    type: 'number',
+    example: 1,
+  })
+  @IsNotEmpty()
+  @IsInt()
+  public categoryId: number;
 }
