@@ -109,6 +109,7 @@ export class BlogService {
           : {},
         relations: {
           hashTags: true,
+          category: true,
         },
       });
       return { list, count };
@@ -129,6 +130,7 @@ export class BlogService {
         where,
         relations: {
           hashTags: true,
+          category: true,
         },
       });
     } catch (e) {
