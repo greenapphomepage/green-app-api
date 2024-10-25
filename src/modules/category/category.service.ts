@@ -31,11 +31,11 @@ export class CategoryService {
   }
   async updateCategory(body: UpdateCategoryDto) {
     try {
-      const { id } = body;
+      const { id, ...payload } = body;
       const checkCategory = await this.categoryRepo.findOneOrFail({
         where: { id },
       });
-      const newEntity = extend(checkCategory, body);
+      const newEntity = extend(checkCategory, payload);
       return this.categoryRepo.save(newEntity);
     } catch (e) {
       console.log({ e });

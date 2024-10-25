@@ -71,19 +71,19 @@ export class BlogService {
   }
   async updateBlog(body: UpdateBlogDto) {
     try {
-      const { id } = body;
+      const { id, ...payload } = body;
       const checkBlog = await this.blogRepo.findOneOrFail({
         where: { id },
       });
-      if (body.title && checkBlog.title !== body.title) {
-        let slug = generateSlug(body.title);
+      if (payload.title && checkBlog.title !== payload.title) {
+        let slug = generateSlug(payload.title);
         const checkSlug = await this.blogRepo.findOne({ where: { slug } });
         if (checkSlug) {
           slug = slug + '-' + uuid.v4();
         }
-        body.slug = slug;
+        payload.slug = slug;
       }
-      const newEntity = extend(checkBlog, body);
+      const newEntity = extend(checkBlog, payload);
       return this.blogRepo.save(newEntity);
     } catch (e) {
       console.log({ e });
