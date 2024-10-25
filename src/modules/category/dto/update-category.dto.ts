@@ -10,7 +10,6 @@ import {
 import { TypeScreenEnum } from '../../screen/enum/type-screen.enum';
 import { CreateCategoryDto } from './create-category.dto';
 
-@Exclude()
 export class UpdateCategoryDto extends CreateCategoryDto {
   public id: number;
 }
