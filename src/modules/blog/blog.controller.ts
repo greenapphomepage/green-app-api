@@ -59,7 +59,7 @@ export class BlogController {
     try {
       query.perPage = !query.perPage ? 10 : query.perPage;
       query.page = !query.page ? 1 : query.page;
-      query.sort ? query.sort.toUpperCase() : 'ASC';
+      query.sort = query.sort ? query.sort.toUpperCase() : 'ASC';
       const result = await this.blogService.listBlog(query);
       const pagi = (result.count / query.perPage) | 0;
       const pages = result.count % query.perPage == 0 ? pagi : pagi + 1;
