@@ -73,6 +73,9 @@ export class BlogService {
       const { id, ...payload } = body;
       const checkBlog = await this.blogRepo.findOneOrFail({
         where: { id },
+        relations: {
+          category: true,
+        },
       });
       if (payload.title && checkBlog.title !== payload.title) {
         let slug = generateSlug(payload.title);
@@ -87,6 +90,22 @@ export class BlogService {
         newEntity.category = await this.categoryRepo.findOneOrFail({
           where: { id: payload.categoryId },
         });
+      }
+      if (payload.hashTags) {
+        const listHashTags = [];
+        for (const tag of payload.hashTags) {
+          const checkTag = await this.hashTagRepo.findOne({
+            where: { name: tag },
+          });
+          if (!checkTag) {
+            const newTag = this.hashTagRepo.create({ name: tag });
+            await this.hashTagRepo.save(newTag);
+            listHashTags.push(newTag);
+          } else {
+            listHashTags.push(checkTag);
+          }
+        }
+        newEntity.hashTags = listHashTags;
       }
       return this.blogRepo.save(newEntity);
     } catch (e) {
