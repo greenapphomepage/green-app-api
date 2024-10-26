@@ -62,11 +62,11 @@ export class AuthService {
       throw 'WRONG_PASSWORD';
     }
     const tokens = await this.signTokenVerify(getUser);
-    await this.updateRtHash(
-      getUser.user_id,
-      tokens.refreshToken,
-      refreshTokenPayload,
-    );
+    // await this.updateRtHash(
+    //   getUser.user_id,
+    //   tokens.refreshToken,
+    //   refreshTokenPayload,
+    // );
     return tokens;
   }
 
@@ -189,11 +189,11 @@ export class AuthService {
       if (!rtMatches) throw 'FORBIDDEN';
 
       const tokens = await this.signTokenVerify(user);
-      await this.updateRtHash(
-        user.user_id,
-        tokens.refreshToken,
-        refreshTokenPayload,
-      );
+      // await this.updateRtHash(
+      //   user.user_id,
+      //   tokens.refreshToken,
+      //   refreshTokenPayload,
+      // );
 
       return tokens;
     } catch (e) {

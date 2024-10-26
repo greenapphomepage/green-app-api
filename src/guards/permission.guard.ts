@@ -25,16 +25,10 @@ export class PermissionsGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     const { headers, socket } = request;
-    const ip = headers['x-forwarded-for'] || socket.remoteAddress;
-    const userAgent = UAParser(request.headers['user-agent']);
+    // const ip = headers['x-forwarded-for'] || socket.remoteAddress;
+    // const userAgent = UAParser(request.headers['user-agent']);
 
-    const user = await UserService.StaticFindUserById(
-      request.user.user_id,
-      ip,
-      userAgent.os.name,
-      userAgent.browser.name,
-      userAgent.ua.slice(0, 7),
-    );
+    const user = await UserService.StaticFindUserById(request.user.user_id);
 
     if (!user || user.refreshToken.length === 0)
       throw new HttpException(

@@ -7,7 +7,6 @@ import {
   Repository,
 } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import code from '../../config/code';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { QueryListDto } from '../../global/dto/query-list.dto';
@@ -84,6 +83,11 @@ export class BlogService {
         payload.slug = slug;
       }
       const newEntity = extend(checkBlog, payload);
+      if (payload.categoryId && checkBlog.category.id !== payload.categoryId) {
+        newEntity.category = await this.categoryRepo.findOneOrFail({
+          where: { id: payload.categoryId },
+        });
+      }
       return this.blogRepo.save(newEntity);
     } catch (e) {
       console.log({ e });

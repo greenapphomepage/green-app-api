@@ -42,13 +42,7 @@ export class UserService {
       relations: { roles: { permissions: true } },
     });
   }
-  static async StaticFindUserById(
-    UserId: number,
-    ip: string,
-    os: string,
-    browser: string,
-    userAgent: string,
-  ) {
+  static async StaticFindUserById(UserId: number) {
     try {
       const userRepository = appDataSource.getRepository(Users);
 
@@ -59,10 +53,6 @@ export class UserService {
         .leftJoinAndSelect('users.roles', 'roles')
         .leftJoinAndSelect('roles.permissions', 'role_permissions')
         .where('users.user_id = :id', { id: UserId })
-        .where('refreshToken.ip = :ip', { ip })
-        .where('refreshToken.os = :os', { os })
-        .where('refreshToken.browser = :browser', { browser })
-        .where('refreshToken.userAgent = :userAgent', { userAgent })
         .getOne();
     } catch (e) {
       console.log({ e });
