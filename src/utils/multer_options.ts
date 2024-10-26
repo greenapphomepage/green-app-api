@@ -4,7 +4,7 @@ import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer
 
 export const multerOptions: MulterOptions = {
   fileFilter: (req: any, file: any, cb: any) => {
-    if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+    if (file.mimetype.match(/\/(jpg|jpeg|png|gif|webp|svg)$/)) {
       // Allow storage of file
       cb(null, true);
     } else {

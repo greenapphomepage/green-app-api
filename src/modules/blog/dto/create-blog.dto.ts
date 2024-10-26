@@ -38,7 +38,6 @@ export class CreateBlogDto {
   })
   @IsNotEmpty()
   @IsString()
-  @MaxLength(255)
   public content: string;
 
   @ApiProperty({
@@ -47,7 +46,6 @@ export class CreateBlogDto {
   })
   @IsNotEmpty()
   @IsString()
-  @MaxLength(255)
   public description: string;
 
   @ApiProperty({
@@ -56,7 +54,6 @@ export class CreateBlogDto {
   })
   @IsNotEmpty()
   @IsString()
-  @MaxLength(255)
   public keywords: string;
 
   @ApiProperty({
