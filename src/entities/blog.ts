@@ -41,7 +41,7 @@ export class Blogs {
   @Column({ type: 'bigint', default: 0 })
   public order: number;
 
-  @ManyToMany(() => HashTags, (hashTags) => hashTags.blogs)
+  @ManyToMany(() => HashTags, (hashTags) => hashTags.blogs, { cascade: true })
   public hashTags: HashTags[];
 
   @ManyToOne(() => Category, (category) => category.blog, {

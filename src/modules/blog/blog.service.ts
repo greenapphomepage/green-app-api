@@ -75,6 +75,7 @@ export class BlogService {
         where: { id },
         relations: {
           category: true,
+          hashTags: true,
         },
       });
       if (payload.title && checkBlog.title !== payload.title) {
@@ -93,6 +94,12 @@ export class BlogService {
       }
       if (payload.hashTags) {
         const listHashTags = [];
+        const tempUpdate = await this.blogRepo.findOneOrFail({
+          where: { id },
+          select: ['id'],
+        });
+        tempUpdate.hashTags = listHashTags;
+        await this.blogRepo.save(tempUpdate);
         for (const tag of payload.hashTags) {
           const checkTag = await this.hashTagRepo.findOne({
             where: { name: tag },
