@@ -15,10 +15,10 @@ const DatabaseConfig = {
   password: process.env.DB_PW,
   database: process.env.DB_NAME,
   // logging: true,
-  extra: {
-    charset: 'utf8mb4_unicode_ci',
-  },
-  subscribers: [mySubscriber],
+  // extra: {
+  //   charset: 'utf8mb4_unicode_ci',
+  // },
+  // subscribers: [mySubscriber],
   // autoLoadEntities: true,
   synchronize: process.env.SYNC === 'true',
   // migrationsRun: false,

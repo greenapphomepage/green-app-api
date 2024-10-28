@@ -80,7 +80,7 @@ export class BlogController {
   @ApiOperation({ summary: 'Detail Blog' })
   // @Auth({ roles: ['SUPER_ADMIN'] })
   @Get(':id')
-  async detailBlog(@Param('id') id: number | string) {
+  async detailBlog(@Param('id') id: string) {
     try {
       const portfolios = await this.blogService.detailBlog(id);
       return SendResponse.success(portfolios);

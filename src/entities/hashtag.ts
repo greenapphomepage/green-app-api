@@ -11,11 +11,14 @@ import {
   ManyToMany,
   JoinTable,
   Index,
+  BaseEntity,
+  OneToMany,
 } from 'typeorm';
 import { Blogs } from './blog';
+import { BlogHashtag } from './blog_hashtag';
 
 @Entity('hashtags')
-export class HashTags {
+export class HashTags extends BaseEntity {
   @PrimaryGeneratedColumn('increment', { type: 'bigint', unsigned: true })
   public id: number;
 
@@ -23,11 +26,8 @@ export class HashTags {
   @Index()
   public name: string;
 
-  @ManyToMany(() => Blogs, (blogs) => blogs.hashTags)
-  @JoinTable({
-    name: 'blog_hashtag',
-  })
-  public blogs: Blogs[];
+  @OneToMany(() => BlogHashtag, (blogHashtag) => blogHashtag.hashTags)
+  public blogHashtag: BlogHashtag[];
 
   @CreateDateColumn({ name: 'created_at' })
   public created_at: Date;

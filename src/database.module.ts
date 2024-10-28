@@ -14,10 +14,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         const options = DatabaseConfig;
         return options;
       },
-      dataSourceFactory: async (options) => {
-        const dataSource = await new DataSource(options).initialize();
-        return dataSource;
-      },
+      // dataSourceFactory: async (options) => {
+      //   const dataSource = await new DataSource(options).initialize();
+      //   return dataSource;
+      // },
     }),
   ],
 })

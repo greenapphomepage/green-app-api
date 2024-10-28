@@ -10,12 +10,15 @@ import {
   JoinColumn,
   ManyToMany,
   Index,
+  BaseEntity,
+  OneToMany,
 } from 'typeorm';
 import { HashTags } from './hashtag';
 import { Category } from './category';
+import { BlogHashtag } from './blog_hashtag';
 
 @Entity('blogs')
-export class Blogs {
+export class Blogs extends BaseEntity {
   @PrimaryGeneratedColumn('increment', { type: 'bigint', unsigned: true })
   public id: number;
 
@@ -41,8 +44,8 @@ export class Blogs {
   @Column({ type: 'bigint', default: 0 })
   public order: number;
 
-  @ManyToMany(() => HashTags, (hashTags) => hashTags.blogs, { cascade: true })
-  public hashTags: HashTags[];
+  @OneToMany(() => BlogHashtag, (blogHashtag) => blogHashtag.blogs)
+  blogHashtag: BlogHashtag[];
 
   @ManyToOne(() => Category, (category) => category.blog, {
     onDelete: 'CASCADE',

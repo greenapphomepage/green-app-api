@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {
+  DataSource,
   FindOptionsWhere,
   LessThan,
   Like,
@@ -17,6 +18,7 @@ import * as uuid from 'uuid';
 import { generateSlug } from '../../utils/slug';
 import { OrderType } from './enum/orderType';
 import { Category } from '../../entities/category';
+import { BlogHashtag } from '../../entities/blog_hashtag';
 
 @Injectable()
 export class BlogService {
@@ -27,8 +29,14 @@ export class BlogService {
     private readonly categoryRepo: Repository<Category>,
     @InjectRepository(HashTags)
     private readonly hashTagRepo: Repository<HashTags>,
+    @InjectRepository(BlogHashtag)
+    private readonly blogHashTagRepo: Repository<BlogHashtag>,
+    private dataSource: DataSource,
   ) {}
   async createBlog(body: CreateBlogDto) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
       const { hashTags } = body;
       const category = await this.categoryRepo.findOneOrFail({
@@ -36,15 +44,9 @@ export class BlogService {
       });
       //find or create list hashTags
       const listHashTags = [];
-      for (const tag of hashTags) {
-        const checkTag = await this.hashTagRepo.findOne({
-          where: { name: tag },
-        });
-        if (!checkTag) {
-          const newTag = this.hashTagRepo.create({ name: tag });
-          await this.hashTagRepo.save(newTag);
-          listHashTags.push(newTag);
-        } else {
+      if (hashTags) {
+        for (const tag of hashTags) {
+          const checkTag = await this.findOrCreateHashtag(tag);
           listHashTags.push(checkTag);
         }
       }
@@ -55,17 +57,28 @@ export class BlogService {
       if (checkSlug) {
         slug = slug + '-' + uuid.v4();
       }
-      const blog = this.blogRepo.create({
+      const blog = queryRunner.manager.create(Blogs, {
         ...body,
-        hashTags: listHashTags,
         slug,
         category,
         order: new Date().getTime(),
       });
-      return this.blogRepo.save(blog);
+      await queryRunner.manager.save(blog);
+      for (const hT of listHashTags) {
+        const blogHashtag = queryRunner.manager.create(BlogHashtag, {
+          blogs: blog,
+          hashTags: hT,
+        });
+        await queryRunner.manager.save(blogHashtag);
+      }
+      await queryRunner.commitTransaction();
+      return blog;
     } catch (e) {
       console.log({ e });
+      await queryRunner.rollbackTransaction();
       throw e;
+    } finally {
+      await queryRunner.release();
     }
   }
   async updateBlog(body: UpdateBlogDto) {
@@ -75,7 +88,6 @@ export class BlogService {
         where: { id },
         relations: {
           category: true,
-          hashTags: true,
         },
       });
       if (payload.title && checkBlog.title !== payload.title) {
@@ -92,27 +104,23 @@ export class BlogService {
           where: { id: payload.categoryId },
         });
       }
-      if (payload.hashTags) {
+      if (payload.hashTags && payload.hashTags.length) {
         const listHashTags = [];
-        const tempUpdate = await this.blogRepo.findOneOrFail({
-          where: { id },
-          select: ['id'],
-        });
-        tempUpdate.hashTags = listHashTags;
-        await this.blogRepo.save(tempUpdate);
         for (const tag of payload.hashTags) {
-          const checkTag = await this.hashTagRepo.findOne({
-            where: { name: tag },
-          });
-          if (!checkTag) {
-            const newTag = this.hashTagRepo.create({ name: tag });
-            await this.hashTagRepo.save(newTag);
-            listHashTags.push(newTag);
-          } else {
-            listHashTags.push(checkTag);
-          }
+          const checkTag = await this.findOrCreateHashtag(tag);
+          listHashTags.push(checkTag);
         }
-        newEntity.hashTags = listHashTags;
+        await this.blogHashTagRepo.delete({
+          blogs: { id },
+        });
+        for (const hT of listHashTags) {
+          await this.blogHashTagRepo
+            .create({
+              blogs: newEntity,
+              hashTags: hT,
+            })
+            .save();
+        }
       }
       return this.blogRepo.save(newEntity);
     } catch (e) {
@@ -138,9 +146,15 @@ export class BlogService {
             ]
           : {},
         relations: {
-          hashTags: true,
+          blogHashtag: {
+            hashTags: true,
+          },
           category: true,
         },
+      });
+      list.forEach((i) => {
+        i['hashTags'] = i.blogHashtag.map((j) => j.hashTags);
+        delete i.blogHashtag;
       });
       return { list, count };
     } catch (e) {
@@ -156,13 +170,18 @@ export class BlogService {
       where['id'] = Number(id);
     }
     try {
-      return this.blogRepo.findOneOrFail({
+      const detail = await this.blogRepo.findOneOrFail({
         where,
         relations: {
-          hashTags: true,
           category: true,
+          blogHashtag: {
+            hashTags: true,
+          },
         },
       });
+      detail['hashTags'] = detail.blogHashtag.map((i) => i.hashTags);
+      delete detail.blogHashtag;
+      return detail;
     } catch (e) {
       console.log({ e });
       throw e;
@@ -239,5 +258,15 @@ export class BlogService {
       console.log(e);
       throw e;
     }
+  }
+
+  async findOrCreateHashtag(name: string) {
+    const check = await this.hashTagRepo.findOne({
+      where: {
+        name,
+      },
+    });
+    if (check) return check;
+    return this.hashTagRepo.create({ name }).save();
   }
 }
