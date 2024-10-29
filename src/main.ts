@@ -9,6 +9,7 @@ import { escapeHTMLpipe } from './pipe/escape_HTML_transform';
 // import * as fs from 'fs';
 // import * as path from 'path';
 import { Logger, VersioningType } from '@nestjs/common';
+import { json } from 'express';
 
 async function bootstrap() {
   const logger = new Logger();
@@ -63,6 +64,7 @@ async function bootstrap() {
   // });
 
   app.use(compression());
+  app.use(json({ limit: '10mb' }));
   app.enableVersioning({ type: VersioningType.URI });
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new unEscapeHTMLInterceptor());
