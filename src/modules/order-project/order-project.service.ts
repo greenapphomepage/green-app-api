@@ -9,6 +9,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { MailService } from '../../utils/mail';
 import * as process from 'process';
+import axios from 'axios';
 import { CreateTable } from '../../utils/table';
 
 @Injectable()
@@ -75,16 +76,24 @@ export class OrderProjectService {
           `table${getOrder.orderId}`,
           getOrder.platform,
         );
-       try {
-         await this.mailer.sendNotifyMailToCustomer(
-             `${process.env.SERVER_HOST}/table/table${getOrder.orderId}.pdf`,
-             getOrder.estimatedCost,
-             process.env.MAIL_USERNAME,
-             getOrder.email,
-         );
-       }
-       catch (e) {
-       }
+        try {
+          await axios.post(
+            'https://server.kormsg.com/api/v1/setting/send_sms',
+            {
+              content: `
+              New order from ${getOrder.companyName}
+              Project Name: ${getOrder.projectName}
+              Detail: ${process.env.SERVER_HOST}/table/table${getOrder.orderId}.pdf
+              `,
+            },
+          );
+          await this.mailer.sendNotifyMailToCustomer(
+            `${process.env.SERVER_HOST}/table/table${getOrder.orderId}.pdf`,
+            getOrder.estimatedCost,
+            process.env.MAIL_USERNAME,
+            getOrder.email,
+          );
+        } catch (e) {}
         return getOrder;
       }
       return null;
