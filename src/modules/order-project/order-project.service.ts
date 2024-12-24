@@ -71,7 +71,7 @@ export class OrderProjectService {
         getOrder.planFile = JSON.parse(getOrder.planFile);
         getOrder.options = JSON.parse(getOrder.options);
         await CreateTable.create(
-          options,
+          options || [],
           getOrder.estimatedCost,
           `table${getOrder.orderId}`,
           getOrder.platform,
@@ -87,13 +87,15 @@ export class OrderProjectService {
               `,
             },
           );
-          await this.mailer.sendNotifyMailToCustomer(
-            `${process.env.SERVER_HOST}/table/table${getOrder.orderId}.pdf`,
-            getOrder.estimatedCost,
-            process.env.MAIL_USERNAME,
-            getOrder.email,
-          );
-        } catch (e) {}
+          // await this.mailer.sendNotifyMailToCustomer(
+          //   `${process.env.SERVER_HOST}/table/table${getOrder.orderId}.pdf`,
+          //   getOrder.estimatedCost,
+          //   process.env.MAIL_USERNAME,
+          //   getOrder.email,
+          // );
+        } catch (e) {
+          console.log({ e });
+        }
         return getOrder;
       }
       return null;
